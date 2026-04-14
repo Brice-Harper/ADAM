@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <h2 class="title is-3">Bienvenue !</h2>
+        <p>Cette page utilise Bulma via CDN et hérite de <code>base.html</code>.</p>
+    </div>
+
+    <div class="notification is-info">
+        Prochaine étape : intégrer la connexion / déconnexion et sécuriser l'accès.
+    </div>
+
+    <div class="buttons">
+        <a class="button is-primary" href="{% url 'home' %}">Rester sur l'accueil</a>
+    </div>
+{% endblock %}

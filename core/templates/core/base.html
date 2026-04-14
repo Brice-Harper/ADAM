@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Espace perso{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+
+<body>
+    <header class="section">
+        <div class="container">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="container">
+
+                    {% if is_workspace %}
+                    <!-- NAV ESPACE PRIVÉ -->
+                    <div class="navbar-brand">
+                        <span class="navbar-item">
+                            <strong>Espace personnel</strong>
+                        </span>
+                    </div>
+
+                    <div class="navbar-end">
+                        {% if user.is_authenticated %}
+                        <div class="navbar-item">
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button class="button is-light" type="submit">
+                                    Se déconnecter
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% else %}
+                    <!-- NAVBAR SITE PUBLIC -->
+                    <div class="navbar-brand">
+                        <a class="navbar-item" href="{% url 'home' %}">
+                        <strong>Espace personnel</strong>
+                        </a>
+                    </div>
+
+                    <div class="navbar-menu">
+                        <div class="navbar-start">
+                        <a class="navbar-item" href="{% url 'home' %}">
+                            Accueil
+                        </a>
+
+                        {% if user.is_authenticated %}
+                            <a class="navbar-item" href="{% url 'dashboard' %}">
+                            Dashboard
+                            </a>
+                        {% endif %}
+                        </div>
+
+                        <div class="navbar-end">
+                        {% if user.is_authenticated %}
+                            <div class="navbar-item">
+                            Bonjour, <strong>{{ user.username }}</strong>
+                            </div>
+
+                            <div class="navbar-item">
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button class="button is-light" type="submit">
+                                Se déconnecter
+                                </button>
+                            </form>
+                            </div>
+                        {% else %}
+                            <div class="navbar-item">
+                            <a class="button is-primary" href="{% url 'login' %}">
+                                Se connecter
+                            </a>
+                            </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="section">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p><small>© {% now "Y" %} - Espace personnel</small></p>
+        </div>
+    </footer>
+</body>
+</html>

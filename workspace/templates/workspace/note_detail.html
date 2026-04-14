@@ -1,0 +1,22 @@
+{% extends "workspace/base_private.html" %}
+
+{% block workspace_content %}
+    <div class="content">
+        <h2 class="title is-3">{{ note.title }}</h2>
+
+        <p class="is-size-7 has-text-grey">
+            Créée le {{ note.created_at|date:"d/m/Y H:i" }}<br>
+            Dernière modification le {{ note.updated_at|date:"d/m/Y H:i" }}
+        </p>
+
+        <hr>
+
+        <div class="box">
+            {{ note.content|linebreaks }}
+        </div>
+
+        <div class="mt-4">
+            <a class="button is-light" href="{% url 'note_list' %}">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}

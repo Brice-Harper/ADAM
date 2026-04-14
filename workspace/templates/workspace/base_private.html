@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+
+{% block title %}Espace Privé{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <aside class="column is-3">
+                    <nav class="menu">
+                        <p class="menu-label">Espace Personnel</p>
+                        <ul class="menu-list">
+                            <li>
+                                <a href="{% url 'workspace_index' %}">Accueil</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'admin:index' %}" target="_blank">Administration</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'note_list' %}">Notes</a>
+                            </li>
+                            <li>
+                                <a href="#">Tâches</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <div class="column is-9">
+                    {% block workspace_content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

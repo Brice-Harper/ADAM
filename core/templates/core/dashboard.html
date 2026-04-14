@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <h2 class="title is-3">Tableau de bord</h2>
+        <p>Tu es connecté : <strong>{{ user.username }}</strong>.</p>
+    </div>
+
+    <div class="notification is-success">
+        Cette page est protégée avec <code>@login_required</code>
+    </div>
+{% endblock %}
