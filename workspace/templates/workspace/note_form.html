@@ -1,0 +1,53 @@
+{% extends "workspace/base_private.html" %}
+
+{% block workspace_content %}
+<div class="content">
+    <h2 class="title is-3">Créer une note</h2>
+</div>
+
+{% if form.non_field_errors %}
+    <div class="notification is-danger">
+        {{ form.non_field_errors }}
+    </div>
+{% endif %}
+
+<div class="box">
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="field">
+            <label class="label" for="{{ form.title.id_for_label }}">
+                {{ form.title.label }}
+            </label>
+            <div class="control">
+                {{ form.title }}
+            </div>
+            {% if form.title.errors %}
+                <p class="help is-danger">{{ form.title.errors }}</p>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="{{ form.content.id_for_label }}">
+                {{ form.content.label }}
+            </label>
+            <div class="control">
+                {{ form.content }}
+            </div>
+            {% if form.content.errors %}
+                <p class="help is-danger">{{ form.content.errors }}</p>
+            {% endif %}
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-primary" type="submit">Enregistrer</button>
+            </div>
+
+            <div class="control">
+                <a class="button is-light" href="{% url 'note_list' %}">Annuler</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
