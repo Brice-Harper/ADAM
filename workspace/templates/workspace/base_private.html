@@ -27,6 +27,15 @@
                 </aside>
 
                 <div class="column is-9">
+                    {% if messages %}
+                        <div class="container mb-4">
+                            {% for message in messages %}
+                                <div class="notification is-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                     {% block workspace_content %}
                     {% endblock %}
                 </div>

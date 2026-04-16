@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import Note
 from .forms import NoteForm
 
@@ -35,6 +36,7 @@ def note_create(request):
             note = form.save(commit=False)
             note.author = request.user
             note.save()
+            messages.success(request, "Note créée avec succès")
             return redirect("note_list")
     else:
         form = NoteForm()
