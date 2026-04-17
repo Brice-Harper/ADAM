@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse
+from django.core.paginator import Paginator
 from urllib.parse import urlencode
 from .models import Note
 from .forms import NoteForm
@@ -13,8 +14,20 @@ def index(request):
     return render(request, "workspace/index.html", context)
 
 
+# def note_list(request):
+#    notes = Note.objects.filter(author=request.user).order_by("-updated_at")
+#    context = {
+#        "is_workspace": True,
+#        "notes": notes,
+#    }
+#    return render(request, "workspace/note_list.html", context)
+
+
 def note_list(request):
-    notes = Note.objects.filter(author=request.user).order_by("-updated_at")
+    notes_queryset = Note.objects.filter(author=request.user).order_by("-updated_at")
+    paginator = Paginator(notes_queryset, 10)  # Afficher 10 notes par page
+    page_number = request.GET.get("page")
+    notes = paginator.get_page(page_number)
     context = {
         "is_workspace": True,
         "notes": notes,

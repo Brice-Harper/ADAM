@@ -16,8 +16,12 @@
         </div>
 
         <div class="buttons mt-4">
-            <a href="{% url 'note_update' note.id %}" class="button is-warning">Modifier</a>
-            <a href="{% url 'note_delete' note.id %}" class="button is-danger is-light">Supprimer</a>
+            <a href="{% url 'note_update' note.id %}" class="button is-warning">
+                <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i><span>Modifier</span>
+            </a>
+            <a href="{% url 'note_delete' note.id %}" class="button is-danger is-light">
+                <i class="fa-regular fa-trash-can" aria-hidden="true"></i><span>Supprimer</span>
+            </a>
         </div>
 
         <div class="mt-4">
