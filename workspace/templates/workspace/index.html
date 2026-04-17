@@ -3,12 +3,48 @@
 {% block title %}Espace privé{% endblock %}
 
 {% block workspace_content %}
-    <div class="content">
-        <h2 class="title is-3">Accueil de l'espace privé</h2>
-        <p>Bienvenue dans la zone <strong>/app/</strong>.</p>
-    </div>
 
-    <div class="notification is-success">
-        Ce layout est spoécifique à l'espace privé<code>/app/</code>.
+<h2 class="title is-3 mb-5">
+  Accueil de l'espace privé
+</h2>
+
+<div class="content mb-5">
+  <p>
+    Bienvenue dans votre espace personnel.
+    Cet espace vous permet d’avoir un aperçu de vos contenus et fonctionnalités.
+  </p>
+</div>
+
+<div class="columns">
+
+  <div class="column is-6">
+    <div class="box">
+      <h3 class="title is-5">
+        <i class="fa-regular fa-note-sticky mr-2" aria-hidden="true"></i>
+        Notes
+      </h3>
+      <p>
+        Consultez, créez et gérez vos notes personnelles.
+      </p>
+      <a href="{% url 'note_list' %}" class="button is-primary">
+        <i class="fa-solid fa-arrow-right mr-1" aria-hidden="true"></i>
+        Accéder aux notes
+      </a>
     </div>
+  </div>
+
+  <div class="column is-6">
+    <div class="box has-text-grey">
+      <h3 class="title is-5">
+        <i class="fa-solid fa-list-check mr-2" aria-hidden="true"></i>
+        Tâches
+      </h3>
+      <p>
+        Cette fonctionnalité sera bientôt disponible.
+      </p>
+    </div>
+  </div>
+
+</div>
+
 {% endblock %}

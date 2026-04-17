@@ -1,0 +1,210 @@
+/* =============================
+Boxes - Amélioration visuelle
+============================= */
+
+.box {
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* =============================
+Titres - hiérarchie visuelle
+============================= */
+
+.title.is-3 {
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* =============================
+Boutons - amélioration UX
+============================= */
+
+.button {
+    border-radius: 6px;
+    font-weight: 500;
+    transition:
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+        transform 0.1s ease;
+}
+
+.button:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px 0.25);
+    transform: translateY(-1px);
+}
+
+.button.is-danger {
+    box-shadow: 0 4px 12px rgba(241, 70, 104, 0.25);
+}
+
+.button.is-danger:hover {
+    box-shadow: 0 6px 16px rgba(241, 70, 104, 0.35);
+}
+
+.button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.button.is-primary {
+    box-shadow: 0 4px 12px rgba(72, 95, 199, 0.25);
+}
+
+.button.is-primary:hover {
+    box-shadow: 0 6px 16px rgba(72, 95, 199, 0.35);
+}
+
+/* =============================
+Notifications - Amélioration visuelle
+============================= */
+
+.notification {
+    /*border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.04);*/
+    position: relative;
+    padding-left: 3rem;
+}
+
+.notification::before {
+    position: absolute;
+    left: 1rem;
+    top: 1.1rem;
+    font-family: "Font Awesome 7 Free";
+    font-weight: 900;
+    font-size: 1.1rem;
+}
+
+.notification.is-success::before {
+    content: "\f058"; /* Font Awesome check icon */
+}
+
+.notification.is-danger::before {
+    content: "\f057"; /* Font Awesome times icon */
+}
+
+.notification.is-warning::before {
+    content: "\f071"; /* Font Awesome exclamation-triangle icon */
+}
+
+.notification.is-info::before {
+    content: "\f05a"; /* Font Awesome info icon */
+}
+
+/* =============================
+Sidebar - Amélioration visuelle
+============================= */
+
+.menu-list a {
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    display: block;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.menu-list a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    text-decoration: none;
+}
+
+.menu-list a.is-active {
+    background-color: rgba(72, 95, 199, 0.12);
+    color: #485fc7;
+    font-weight: 500;
+}
+
+/* =============================
+Formulaires - Amélioration visuelle
+============================= */
+
+.label {
+    font-weight: 500;
+    color: #363636;
+}
+
+.input,
+.textarea,
+.select select {
+    border-radius: 6px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus,
+.textarea:focus,
+.select select:focus {
+    border-color: #485fc7;
+    box-shadow: 0 0 0 0.125rem rgba(72, 95, 199, 0.25);
+}
+
+.textarea {
+    min-height: 160px;
+    resize: vertical;
+}
+
+/* =============================
+Liens - contenu principal
+============================= */
+
+a {
+    color: #485fc7;
+    text-decoration: none;
+    transition: color 0.15s ease, border-bottom-color 0.15s ease;
+}
+
+a:not(.button):hover {
+    color: #364fc7;
+}
+
+/* =============================
+Navbar - Amélioration visuelle
+============================= */
+
+.navbar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    z-index: 30;
+}
+
+.navbar .navbar-item,
+.navbar .navbar-link {
+    font-weight: 500;
+}
+
+.navbar .navbar-item strong {
+    font-weight: 600;
+}
+
+/* =============================
+Footer - Amélioration visuelle
+============================= */
+
+.footer {
+    padding: 1.5rem 1rem;
+    background-color: #fafafa;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.footer .content {
+    font-size: 0.9rem;
+    color: #7a7a7a;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.box,
+.notification {
+    animation: fadeInUp 0.25s ease-out;
+}

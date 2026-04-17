@@ -3,43 +3,77 @@
 {% block title %}Espace Privé{% endblock %}
 
 {% block content %}
-    <section class="section">
-        <div class="container">
-            <div class="columns">
-                <aside class="column is-3">
-                    <nav class="menu">
-                        <p class="menu-label">Espace Personnel</p>
-                        <ul class="menu-list">
-                            <li>
-                                <a href="{% url 'workspace_index' %}">Accueil</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'admin:index' %}" target="_blank">Administration</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'note_list' %}">Notes</a>
-                            </li>
-                            <li>
-                                <a href="#">Tâches</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </aside>
+    <div class="columns is-gapless" style="flex: 1; min-height: 0;">
 
-                <div class="column is-9">
-                    {% if messages %}
-                        <div class="container mb-4">
-                            {% for message in messages %}
-                                <div class="notification is-{{ message.tags }}">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% block workspace_content %}
-                    {% endblock %}
-                </div>
+        <!-- Sidebar -->
+        <aside
+            class="has-background-light p-4"
+            style="
+            position: fixed;
+            top:3.25rem;
+            left: 0;
+            width: 16rem;
+            height: calc(100vh - 3.25rem);
+            border-right: 1px solid #e5e5e5;
+            overflow-y: auto;">
+            <nav class="menu">
+
+                <p class="menu-label">Espace personnel</p>
+                <ul class="menu-list">
+                    <li>
+                        <a href="{% url 'workspace_index' %}" class="{% if request.resolver_match.url_name == 'workspace_index' %}is-active{% endif %}">
+                            <i class="fa-regular fa-home mr-2" aria-hidden="true"></i>
+                            Accueil
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'note_list' %}" class="{% if request.resolver_match.url_name == 'note_list' %}is-active{% endif %}">
+                            <i class="fa-regular fa-note-sticky mr-2" aria-hidden="true"></i>
+                            Notes
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'admin:index' %}" target="_blank">
+                            <i class="fa-solid fa-gears mr-2" aria-hidden="true"></i>
+                            Administration
+                        </a>
+                    </li>
+                </ul>
+
+                <p class="menu-label">À venir</p>
+                <ul class="menu-list">
+                    <li>
+                        <span class="has-text-grey">
+                            <i class="fa-solid fa-list-check mr-2" aria-hidden="true"></i>
+                            Tâches
+                        </span>
+                    </li>
+                </ul>
+
+            </nav>
+        </aside>
+
+        <!-- Contenu principal -->
+        <div style="margin-left: 16rem;">
+            <div class="p-5" style="height: 100%; overflow-y: auto;">
+
+                {% if messages %}
+                    <div class="mb-4">
+                        {% for message in messages %}
+                            <div class="notification is-{{ message.tags }}">
+                            {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% block workspace_content %}
+                {% endblock %}
+
             </div>
         </div>
-    </section>
+
+    </div>
 {% endblock %}

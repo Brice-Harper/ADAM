@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,12 +7,14 @@
     <title>{% block title %}Espace perso{% endblock %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_head %}{% endblock %}
 </head>
 
-<body>
+<body class="has-navbar fixed-top" style="min-height: 100vh; display: flex; flex-direction: column;">
     <header class="section">
         <div class="container">
-            <nav class="navbar" role="navigation" aria-label="main navigation">
+            <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
                 <div class="container">
 
                     {% if is_workspace %}
@@ -86,10 +89,14 @@
         </div>
     </header>
 
-    <main class="section">
-        <div class="container">
-            {% block content %}{% endblock %}
-        </div>
+    <main style="flex: 1; min-height: 0;">
+        {% if not is_workspace %}
+            <div class="container">
+        {% endif %}
+        {% block content %}{% endblock %}
+        {% if not is_workspace %}
+            </div>
+        {% endif %}
     </main>
 
     <footer class="footer">
@@ -97,5 +104,6 @@
             <p><small>© {% now "Y" %} - Espace personnel</small></p>
         </div>
     </footer>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

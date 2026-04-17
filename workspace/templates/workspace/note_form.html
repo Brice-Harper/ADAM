@@ -1,53 +1,77 @@
 {% extends "workspace/base_private.html" %}
 
+{% block extra_head %}
+    {{ block.super }}
+    {{ form.media.css }}
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    {{ form.media.js }}
+{% endblock %}
+
 {% block workspace_content %}
-<div class="content">
-    <h2 class="title is-3">{{ page_title|default:"Créer une note" }}</h2>
-</div>
+    <div class="container is-fluid">
 
-{% if form.non_field_errors %}
-    <div class="notification is-danger">
-        {{ form.non_field_errors }}
+        <h2 class="title is-3 mb-5">
+            {{ page_title|default:"Créer une note" }}
+        </h2>
+
+        {% if form.non_field_errors %}
+            <div class="notification is-danger">
+                {{ form.non_field_errors }} 
+            </div>
+        {% endif %}
+
+        <div class="box">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="field">
+                    <label class="label" for="{{ form.title.id_for_label }}">
+                        {{ form.title.label }}
+                    </label>
+                    <div class="control">
+                        {{ form.title }}
+                    </div>
+                    {% if form.title.errors %}
+                        <p class="help is-danger">
+                            {{ form.title.errors }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="{{ form.content.id_for_label }}">
+                        {{ form.content.label }}
+                    </label>
+                    <div class="control">
+                        {{ form.content }}
+                    </div>
+                    {% if form.content.errors %}
+                        <p class="help is-danger">
+                            {{ form.content.errors }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div class="field is-grouped mt-5">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">
+                        {{ submit_label|default:"Enregistrer" }}
+                        </button>
+                    </div>
+
+                    <div class="control">
+                        <a class="button is-light" href="{% url 'note_list' %}">
+                            Annuler
+                        </a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
     </div>
-{% endif %}
 
-<div class="box">
-    <form method="post">
-        {% csrf_token %}
-
-        <div class="field">
-            <label class="label" for="{{ form.title.id_for_label }}">
-                {{ form.title.label }}
-            </label>
-            <div class="control">
-                {{ form.title }}
-            </div>
-            {% if form.title.errors %}
-                <p class="help is-danger">{{ form.title.errors }}</p>
-            {% endif %}
-        </div>
-
-        <div class="field">
-            <label class="label" for="{{ form.content.id_for_label }}">
-                {{ form.content.label }}
-            </label>
-            <div class="control">
-                {{ form.content }}
-            </div>
-            {% if form.content.errors %}
-                <p class="help is-danger">{{ form.content.errors }}</p>
-            {% endif %}
-        </div>
-
-        <div class="field is-grouped">
-            <div class="control">
-                <button class="button is-primary" type="submit">{{ submit_label|default:"Enregistrer" }}</button>
-            </div>
-
-            <div class="control">
-                <a class="button is-light" href="{% url 'note_list' %}">Annuler</a>
-            </div>
-        </div>
-    </form>
-</div>
 {% endblock %}
