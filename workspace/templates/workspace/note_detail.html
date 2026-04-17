@@ -15,6 +15,11 @@
             {{ note.content|linebreaks }}
         </div>
 
+        <div class="buttons mt-4">
+            <a href="{% url 'note_update' note.id %}" class="button is-warning">Modifier</a>
+            <a href="{% url 'note_delete' note.id %}" class="button is-danger is-light">Supprimer</a>
+        </div>
+
         <div class="mt-4">
             <a class="button is-light" href="{% url 'note_list' %}">Retour à la liste</a>
         </div>

@@ -2,7 +2,7 @@
 
 {% block workspace_content %}
 <div class="content">
-    <h2 class="title is-3">Créer une note</h2>
+    <h2 class="title is-3">{{ page_title|default:"Créer une note" }}</h2>
 </div>
 
 {% if form.non_field_errors %}
@@ -41,7 +41,7 @@
 
         <div class="field is-grouped">
             <div class="control">
-                <button class="button is-primary" type="submit">Enregistrer</button>
+                <button class="button is-primary" type="submit">{{ submit_label|default:"Enregistrer" }}</button>
             </div>
 
             <div class="control">

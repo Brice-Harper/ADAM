@@ -1,33 +1,52 @@
 {% extends "workspace/base_private.html" %}
 
 {% block workspace_content %}
-<div class="content">
-    <h2 class="title is-3">Mes notes</h2>
-</div>
 
-{% if notes %}
-    <div class="columns is-multiline">
-        {% for note in notes %}
-            <div class="column is-12">
-                <div class="box">
-                    <h3 class="title is-5">
-                        <a href="{% url 'note_detail' note.id %}">
-                            {{ note.title }}
-                        </a>
-                    </h3>
+    {% with highlighted_note_id=request.GET.highlight %}
 
-                    <p class="is-size-7 has-text-grey">
-                        Créée le {{ note.created_at|date:"d/m/Y H:i" }}<br>
-                        Dernière modification le {{ note.updated_at|date:"d/m/Y H:i" }}
-                    </p>
-                </div>
+        <div class="content is-flex is-justify-content-space-between is-align-items-center">
+            <h2 class="title is-3 mb-0">Mes notes</h2>
+            <a href="{% url 'note_create' %}" class="button is-primary">+ Nouvelle note</a>
+        </div>
+
+        {% if notes %}
+            <div class="columns is-multiline">
+                {% for note in notes %}
+                    <div class="column is-12">
+                        <div class="box {% if highlighted_note_id == note.id|stringformat:'s' %}has-background-info-light{% endif %}">
+                            <h3 class="title is-5">
+                                <a href="{% url 'note_detail' note.id %}">
+                                    {{ note.title }}
+                                </a>
+                            </h3>
+
+                            <p class="has-text-grey-dark">
+                                {{ note.content|truncatewords:60 }}
+                            </p>
+
+                            <p class="is-size-7 has-text-grey">
+                                Créée le {{ note.created_at|date:"d/m/Y H:i" }}<br>
+                                Dernière modification il y a {{ note.updated_at|timesince }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <div class="notification is-warning">
-        Tu n'as encore aucune note.
-    </div>
-{% endif %}
+        {% else %}
+            <div class="notification is-warning">
+                Tu n'as encore aucune note.
+            </div>
+        {% endif %}
+
+    {% endwith %}
+
+    {% if request.GET.highlight %}
+        <script>
+            // supprime le paramètre "highlight" de l'URL sans recharger la page
+            const url = new URL(window.location);
+            url.searchParams.delete('highlight');
+            window.history.replaceState({}, '', url);
+        </script>
+    {% endif %}
 {% endblock %}
 </div>
