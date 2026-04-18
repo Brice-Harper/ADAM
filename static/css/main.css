@@ -100,22 +100,60 @@ Notifications - Amélioration visuelle
 Sidebar - Amélioration visuelle
 ============================= */
 
+aside {
+    background-color: #f9fafb;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+}
+
+.menu-label {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 0.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9aa0a6
+}
+
 .menu-list a {
     border-radius: 6px;
     padding: 0.5rem 0.75rem;
     display: block;
     transition: background-color 0.15s ease, color 0.15s ease;
+    position: relative;
 }
 
 .menu-list a:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    text-decoration: none;
+    background-color: #f1f4fb;
+    color: #363636;
+    border-radius: 6px;
 }
 
 .menu-list a.is-active {
-    background-color: rgba(72, 95, 199, 0.12);
+    background-color: #e8eefc;
     color: #485fc7;
-    font-weight: 500;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.menu-list a.is-active i {
+    color: #485fc7;
+}
+
+.menu-list a.is-active::before {
+    content: "";
+    position: absolute;
+    left: -0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 70%;
+    background-color: #485fc7;
+    border-radius: 2px;
+}
+
+.menu-list a::before {
+    transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 /* =============================
