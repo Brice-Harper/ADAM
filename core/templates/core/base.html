@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    {% block extra_head %}{% endblock %}
+    {{ form.media }}
 </head>
 
 <body class="has-navbar fixed-top" style="min-height: 100vh; display: flex; flex-direction: column;">
@@ -104,6 +104,7 @@
             <p><small>© {% now "Y" %} - Espace personnel</small></p>
         </div>
     </footer>
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}
+    {% endblock %}
 </body>
 </html>

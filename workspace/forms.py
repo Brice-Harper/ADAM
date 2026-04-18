@@ -1,4 +1,3 @@
-import json
 from django import forms
 from .models import Note
 
@@ -6,7 +5,7 @@ from .models import Note
 class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
-        fields = ["title", "content"]
+        fields = ["title", "content_rich"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -14,6 +13,6 @@ class NoteForm(forms.ModelForm):
         self.fields["title"].widget.attrs.update(
             {"class": "input", "placeholder": "Titre de la note"}
         )
-        self.fields["content"].widget.attrs.update(
-            {"class": "input", "placeholder": "Contenu de la note"}
-        )
+        # self.fields["content"].widget.attrs.update(
+        #    {"class": "input", "placeholder": "Contenu de la note"}
+        # )

@@ -32,7 +32,7 @@
                             <!--Contenu de la carte-->
                             <div class="card-content">
                                 <div class="content">
-                                    {{ note.content|linebreaksbr|truncatewords:60 }}
+                                    {{ note.content_rich.html|safe|linebreaksbr|truncatewords:60 }}
                                 </div>
                             </div>
 

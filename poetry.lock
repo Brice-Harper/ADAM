@@ -37,6 +37,21 @@ argon2 = ["argon2-cffi (>=23.1.0)"]
 bcrypt = ["bcrypt (>=4.1.1)"]
 
 [[package]]
+name = "django-quill-editor"
+version = "0.1.42"
+description = "Integrate Quill editor with Django project."
+optional = false
+python-versions = ">3.8"
+groups = ["main"]
+files = [
+    {file = "django_quill_editor-0.1.42-py3-none-any.whl", hash = "sha256:fc145148a282c20d2072952971c45be82f80901115061a031bc9f74d54602b93"},
+    {file = "django_quill_editor-0.1.42.tar.gz", hash = "sha256:c25ed551459f1aef6582671f426ee57e42e59d0959bca4e544ea8c92a4a5c941"},
+]
+
+[package.dependencies]
+django = ">=3.2"
+
+[[package]]
 name = "sqlparse"
 version = "0.5.5"
 description = "A non-validating SQL parser."
@@ -68,4 +83,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "542d807922f0546cd15be18f0c408520379ec898bc70894ae1a60723e484466b"
+content-hash = "1a232c98a565844a33b63bdf446100418fcba5b75e2d8666ff15bb5fb3d83920"

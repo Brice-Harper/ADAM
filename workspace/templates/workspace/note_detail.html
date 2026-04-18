@@ -12,7 +12,7 @@
         <hr>
 
         <div class="box">
-            {{ note.content|linebreaks }}
+            {{ note.content_rich.html|safe }}
         </div>
 
         <div class="buttons mt-4">

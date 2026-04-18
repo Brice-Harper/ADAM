@@ -24,6 +24,7 @@
         {% endif %}
 
         <div class="box">
+            {{ form.media }}
             <form method="post">
                 {% csrf_token %}
 
@@ -37,6 +38,19 @@
                     {% if form.title.errors %}
                         <p class="help is-danger">
                             {{ form.title.errors }}
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="field">
+                    <label class="label" for="{{ form.content_rich.id_for_label }}">
+                        {{ form.content_rich.label }}
+                    </label>
+                    <div class="control">
+                        {{ form.content_rich }}
+                    </div>
+                    {% if form.content_rich.errors %}
+                        <p class="help is-danger">
+                            {{ form.content_rich.errors }}
                         </p>
                     {% endif %}
                 </div>
@@ -75,3 +89,4 @@
     </div>
 
 {% endblock %}
+

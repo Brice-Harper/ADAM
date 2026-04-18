@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "core",
     "workspace",
+    "django_quill",
 ]
 
 MIDDLEWARE = [
