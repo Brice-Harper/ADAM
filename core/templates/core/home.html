@@ -3,16 +3,65 @@
 {% block title %}Accueil{% endblock %}
 
 {% block content %}
-    <div class="content">
-        <h2 class="title is-3">Bienvenue !</h2>
-        <p>Cette page utilise Bulma via CDN et hérite de <code>base.html</code>.</p>
-    </div>
 
-    <div class="notification is-info">
-        Prochaine étape : intégrer la connexion / déconnexion et sécuriser l'accès.
-    </div>
+    <section class="section">
+        <div class="container">
+            <!-- HERO -->
+             <div class="has-text-centered mb-6 pb-6">
+                <h1 class="title is-2">
+                    Espace Personnel
+                </h1>
 
-    <div class="buttons">
-        <a class="button is-primary" href="{% url 'home' %}">Rester sur l'accueil</a>
-    </div>
+                <p class="subtitle is-5 has-text-grey">
+                    Un espace simple et sécurisé pour centraliser vos notes et informations personnelles
+                </p>
+             </div>
+
+            <!-- SECTION DESCRIPTION -->
+             <div class="columns is-variable is-6 mb-6">
+                <div class="column is-4">
+                    <div class="box has-text-centered">
+                        <span class="icon is-large mb-3">
+                            <i class="fa-regular fa-note-sticky fa-2x"></i>
+                        </span>
+                        <h3 class="title is-5">Notes</h3>
+                        <p class="has-text-grey">
+                            Créez, organisez et retrouvez facilement vos notes dans un espace dédié.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="column is-4">
+                    <div class="box has-text-centered">
+                        <span class="icon is-large mb-3">
+                            <i class="fa-solid fa-lock fa-2x"></i>
+                        </span>
+                        <h3 class="title is-5">Sécurité</h3>
+                        <p class="has-text-grey">
+                            Vos données sont accessibles uniquement après authentification
+                        </p>
+                    </div>
+                </div>
+
+                <div class="column is-4">
+                    <div class="box has-text-centered">
+                        <span class="icon is-large mb-3">
+                            <i class="fa-solid fa-gear fa-2x"></i>
+                        </span>
+                        <h3 class="title is-5">Evolution</h3>
+                        <p class="has-text-grey">
+                            De nouvelles fonctionnalités viendront enrichir l'espace au fil du temps
+                        </p>
+                    </div>
+                </div>
+             </div>
+
+             <!-- SECTION EN COURS -->
+              <div class="notification is-light has-text-centered">
+                <strong>Application en cours de développement</strong><br>
+                Cette page est volontairement simple et sera enrichie progressivement.
+              </div>
+
+        </div>
+    </section>
 {% endblock %}
