@@ -41,7 +41,7 @@
                         </p>
                     {% endif %}
                 </div>
-                <div class="field">
+                <div class="field quill-field">
                     <label class="label" for="{{ form.content_rich.id_for_label }}">
                         {{ form.content_rich.label }}
                     </label>
@@ -71,13 +71,13 @@
 
                 <div class="field is-grouped mt-5">
                     <div class="control">
-                        <button class="button is-primary" type="submit">
+                        <button class="button is-link is-light" type="submit">
                         {{ submit_label|default:"Enregistrer" }}
                         </button>
                     </div>
 
                     <div class="control">
-                        <a class="button is-light" href="{% url 'note_list' %}">
+                        <a class="button is-danger is-light" href="{% url 'note_list' %}">
                             Annuler
                         </a>
                     </div>

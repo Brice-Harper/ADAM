@@ -20,6 +20,68 @@ h2.title {
 Boxes - Amélioration visuelle
 ============================= */
 
+.content {
+    line-height: 1;
+}
+
+/* =============================
+Liste des notes - Cartes uniformes
+============================= */
+
+.note-card {
+    display: flex;
+    flex-direction: column;
+    height: 320px;
+}
+
+.note-card .card-content {
+    flex: 1;
+    overflow: hidden;
+}
+
+.note-card .card-content .content {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.note-card .card-footer {
+    margin-top: auto;
+}
+
+/* =============================
+Liste des notes - Actions Cartes
+============================= */
+
+.note-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+}
+
+.note-card-actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #7a7a7a;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.note-card-actions a:hover {
+    color: var(--accent-color);
+}
+
+.note-card-actions a:last-child:hover {
+    color: #f14668;
+}
+
+/* =============================
+Boxes - Amélioration visuelle
+============================= */
+
 .box {
     border-radius: 10px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
@@ -54,25 +116,9 @@ Boutons - amélioration UX
     transform: translateY(-1px);
 }
 
-.button.is-danger {
-    box-shadow: 0 4px 12px rgba(241, 70, 104, 0.25);
-}
-
-.button.is-danger:hover {
-    box-shadow: 0 6px 16px rgba(241, 70, 104, 0.35);
-}
-
 .button:active {
     transform: translateY(0);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-.button.is-primary {
-    box-shadow: 0 4px 12px rgba(72, 95, 199, 0.25);
-}
-
-.button.is-primary:hover {
-    box-shadow: 0 6px 16px rgba(72, 95, 199, 0.35);
 }
 
 /* =============================
@@ -300,6 +346,33 @@ Page de Connexion
 .login-card .control.has-icons-left .icon i {
     font-size: 1rem;
     line-height: 1;
+}
+
+/* =============================
+Formulaire note - largeur éditeur
+============================= */
+
+.quill-field,
+.quill-field * {
+    box-sizing: border-box;
+}
+
+.quill-field .control {
+    width: 100%;
+}
+
+.quill-field .ql-toolbar,
+.quill-field .ql-container {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.quill-field .django-quill,
+.quill-field .django-quill-editor,
+.quill-field .quill-editor,
+.quill-field .quill {
+    display: block !important;
+    width: 100% !important;
 }
 
 /* =============================

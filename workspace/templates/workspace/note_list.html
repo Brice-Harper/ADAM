@@ -1,4 +1,5 @@
 {% extends "workspace/base_private.html" %}
+{% load humanize %}
 
 {% block workspace_content %}
 
@@ -6,14 +7,14 @@
 
         <div class="content is-flex is-justify-content-space-between is-align-items-center">
             <h2 class="title is-3 mb-0"><i class="fa-regular fa-note-sticky" aria-hidden="true"></i><span>Mes notes</span></h2>
-            <a href="{% url 'note_create' %}" class="button is-primary"><i class="fa-solid fa-plus" aria-hidden="true"></i><span>Nouvelle note</span></a>
+            <a href="{% url 'note_create' %}" class="button is-link is-light"><i class="fa-solid fa-plus" aria-hidden="true"></i><span>Nouvelle note</span></a>
         </div>
 
         {% if notes %}
             <div class="columns is-multiline">
                 {% for note in notes %}
                     <div class="column is-6">
-                        <div class="card {% if highlighted_note_id == note.id|stringformat:'s' %}has-background-info-light{% endif %}">
+                        <div class="card note-card {% if highlighted_note_id == note.id|stringformat:'s' %}has-background-info-light{% endif %}">
 
                             <!--Entête de la carte-->
                             <header class="card-header">
@@ -32,33 +33,39 @@
                             <!--Contenu de la carte-->
                             <div class="card-content">
                                 <div class="content">
-                                    {{ note.content_rich.html|safe|linebreaksbr|truncatewords:60 }}
+                                    {{ note.content_rich.html|safe|truncatewords:60 }}
                                 </div>
                             </div>
 
                             <!--Pied de la carte-->
                             <footer class="card-footer">
                                 <span class="card-footer-item has-text-grey is-size-7">
+                                    <span class="icon is-small mr-1">
+                                        <i class ="fa-regular fa-calendar" aria-hidden="true"></i>
+                                    </span>
                                     Créée le {{ note.created_at|date:"d/m/Y H:i" }}
                                 </span>
                                 <span class="card-footer-item has-text-grey is-size-7">
-                                    Dernière modification il y a {{ note.updated_at|timesince }}
+                                    <span class="icon is-small mr-1">
+                                        <i class ="fa-regular fa-clock" aria-hidden="true"></i>
+                                    </span>
+                                    Modifiée {{ note.updated_at|naturaltime }}
+                                </span>
+                                <span class="card-footer-item note-card-actions">
+                                    <a href="{% url 'note_update' note.id %}">
+                                        <span class="icon is-small">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </span>
+                                        Modifier
+                                    </a>
+                                    <a href="{% url 'note_delete' note.id %}">
+                                        <span class="icon is-small">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </span>
+                                        Supprimer
+                                    </a>
                                 </span>
                             </footer>
-                            <!--<h3 class="title is-5">
-                                <a href="{% url 'note_detail' note.id %}">
-                                    {{ note.title }}
-                                </a>
-                            </h3>
-
-                            <p class="has-text-grey-dark">
-                                {{ note.content|truncatewords:60 }}
-                            </p>
-
-                            <p class="is-size-7 has-text-grey">
-                                Créée le {{ note.created_at|date:"d/m/Y H:i" }}<br>
-                                Dernière modification il y a {{ note.updated_at|timesince }}
-                            </p>-->
                         </div>
                     </div>
                 {% endfor %}

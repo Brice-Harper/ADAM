@@ -12,11 +12,13 @@
         <hr>
 
         <div class="box">
-            {{ note.content_rich.html|safe }}
+            <div class="content">
+                {{ note.content_rich.html|safe }}
+            </div>
         </div>
 
         <div class="buttons mt-4">
-            <a href="{% url 'note_update' note.id %}" class="button is-warning">
+            <a href="{% url 'note_update' note.id %}" class="button is-warning is-light">
                 <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i><span>Modifier</span>
             </a>
             <a href="{% url 'note_delete' note.id %}" class="button is-danger is-light">
