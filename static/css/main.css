@@ -193,6 +193,7 @@ aside {
 
 .sidebar-content {
     margin-left: 16rem;
+    width: calc(100% - 16rem);
 }
 
 /* =============================
@@ -221,6 +222,50 @@ Formulaires - Amélioration visuelle
 .textarea {
     min-height: 160px;
     resize: vertical;
+}
+
+/* =============================
+Formulaires - Amélioration visuelle
+============================= */
+
+.note-form-wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.note-form-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    margin: 0;
+}
+
+.note-form-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin-bottom: 0.4rem;
+}
+
+.note-form-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.quill-field .ql-container {
+    min-height: 320px;
+    font-size: 1rem;
 }
 
 /* =============================

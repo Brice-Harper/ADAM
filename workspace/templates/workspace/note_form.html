@@ -11,66 +11,55 @@
 {% endblock %}
 
 {% block workspace_content %}
-    <div class="container is-fluid">
+    <div class="box note-form-wrapper">
 
-        <h2 class="title is-3 mb-5">
+        <h2 class="note-form-title">
             {{ page_title|default:"Créer une note" }}
         </h2>
 
         {% if form.non_field_errors %}
             <div class="notification is-danger">
-                {{ form.non_field_errors }} 
+                {{ form.non_field_errors }}
             </div>
         {% endif %}
 
-        <div class="box">
-            {{ form.media }}
-            <form method="post">
-                {% csrf_token %}
+        {{ form.media }}
+        <form method="post">
+            {% csrf_token %}
 
-                <div class="field">
-                    <label class="label" for="{{ form.title.id_for_label }}">
-                        {{ form.title.label }}
-                    </label>
-                    <div class="control">
-                        {{ form.title }}
-                    </div>
-                    {% if form.title.errors %}
-                        <p class="help is-danger">
-                            {{ form.title.errors }}
-                        </p>
-                    {% endif %}
+            <div class="field">
+                <label class="note-form-label" for="{{ form.title.id_for_lable }}">
+                    {{ form.title.label }}
+                </label>
+                <div class="control">
+                    {{ form.title }}
                 </div>
-                <div class="field quill-field">
-                    <label class="label" for="{{ form.content_rich.id_for_label }}">
-                        {{ form.content_rich.label }}
-                    </label>
-                    <div class="control">
-                        {{ form.content_rich }}
-                    </div>
-                    {% if form.content_rich.errors %}
-                        <p class="help is-danger">
-                            {{ form.content_rich.errors }}
-                        </p>
-                    {% endif %}
+                {% if form.title.errors %}
+                    <p class="help is-danger">{{ form.title.errors }}</p>
+                {% endif %}
+            </div>
+
+            <div class="field quill-field">
+                <label class="note-form-label" for="{{ form.content_rich.id_for_label }}">
+                    {{ form.content_rich.label }}
+                </label>
+                <div class="control">
+                    {{ form.content_rich }}
                 </div>
+                {% if form.content_rich.errors %}
+                    <p class="help is-danger">{{ form.content_rich.errors }}</p>
+                {% endif %}
+            </div>
 
-                <div class="field is-grouped mt-5">
-                    <div class="control">
-                        <button class="button is-link is-light" type="submit">
-                        {{ submit_label|default:"Enregistrer" }}
-                        </button>
-                    </div>
-
-                    <div class="control">
-                        <a class="button is-danger is-light" href="{% url 'note_list' %}">
-                            Annuler
-                        </a>
-                    </div>
-                </div>
-
-            </form>
-        </div>
+            <div class="note-form-actions">
+                <button class="button is-link is-light" type="submit">
+                    {{ submit_label|default:"Enregistrer" }}
+                </button>
+                <a class="button is-light" href="{% url 'note_list' %}">
+                    Annuler
+                </a>
+            </div>
+        </form>
 
     </div>
 
