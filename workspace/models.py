@@ -5,7 +5,6 @@ from django_quill.fields import QuillField
 
 class Note(models.Model):
     title = models.CharField(max_length=200, verbose_name="Titre")
-    content = models.TextField(verbose_name="Contenu")
     content_rich = QuillField(blank=True, null=True, verbose_name="Contenu enrichi")
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name="Date de création"
