@@ -528,64 +528,8 @@ Boutons - amélioration UX
 }
 
 /* =============================
-Sidebar - Amélioration visuelle
+Sidebar
 ============================= */
-
-aside {
-    background-color: #f9fafb;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
-}
-
-.menu-label {
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-    padding-left: 0.25rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #9aa0a6
-}
-
-.menu-list a {
-    border-radius: 6px;
-    padding: 0.5rem 0.75rem;
-    display: block;
-    transition: background-color 0.15s ease, color 0.15s ease;
-    position: relative;
-}
-
-.menu-list a:hover {
-    background-color: #f1f4fb;
-    color: #363636;
-    border-radius: 6px;
-}
-
-.menu-list a.is-active {
-    background-color: #e8eefc;
-    color: var(--accent-color);
-    font-weight: 600;
-    border-radius: 6px;
-}
-
-.menu-list a.is-active i {
-    color: var(--accent-color);
-}
-
-.menu-list a.is-active::before {
-    content: "";
-    position: absolute;
-    left: -0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 70%;
-    background-color: var(--accent-color);
-    border-radius: 2px;
-}
-
-.menu-list a::before {
-    transition: opacity 0.15s ease, transform 0.15s ease;
-}
 
 .sidebar {
     position: fixed;
@@ -593,13 +537,118 @@ aside {
     left: 0;
     width: 16rem;
     height: calc(100vh - 3.25rem);
-    border-right: 1px solid #e5e5e5;
+    border-right: 0.5px solid rgba(0, 0, 0, 0.07);
     overflow-y: auto;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar-content {
     margin-left: 16rem;
     width: calc(100% - 16rem);
+}
+
+.sidebar-nav {
+    padding: 1.25rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.sidebar-section-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9aa0a6;
+    padding: 0 0.75rem;
+    margin-top: 1rem;
+    margin-bottom: 0.35rem;
+}
+
+.sidebar-section-label:first-child {
+    margin-top: 0;
+}
+
+.sidebar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 7px;
+    font-size: 0.85rem;
+    color: #4a4a4a;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+}
+
+.sidebar-item:hover {
+    background: #f5f7fa;
+    color: #363636;
+}
+
+.sidebar-item.is-active {
+    background: #eef1fd;
+    color: #4f6bdc;
+    font-weight: 500;
+}
+
+.sidebar-item.is-active .sidebar-icon {
+    color: #4f6bdc;
+}
+
+.sidebar-item.is-disabled {
+    color: #9aa0a6;
+    cursor: default;
+}
+
+.sidebar-item.is-disabled:hover {
+    background: transparent;
+    color: #9aa0a6;
+}
+
+.sidebar-icon {
+    width: 16px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #9aa0a6;
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+}
+
+.sidebar-item:hover .sidebar-icon {
+    color: #4a4a4a;
+}
+
+.sidebar-soon {
+    margin-left: auto;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 20px;
+    background: #f5f7fa;
+    color: #9aa0a6;
+    font-weight: 500;
+}
+
+.sidebar-divider {
+    height: 0.5px;
+    background: rgba(0, 0, 0, 0.06);
+    margin: 0.5rem 0.75rem;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
 }
 
 /* =============================
@@ -879,6 +928,225 @@ Notifications Toast
 
 .toast.is-info {
     border-left: 4px solid #4f6bdc;
+}
+
+/* =============================
+Dashboard
+============================= */
+
+.dash-wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1.75rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.dash-header {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dash-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #363636;
+    margin: 0 0 0.25rem 0;
+}
+
+.dash-subtitle {
+    font-size: 0.8rem;
+    color: #9aa0a6;
+    margin: 0;
+}
+
+.dash-section-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9aa0a6;
+    margin-bottom: 0.75rem;
+}
+
+/* Stats */
+.dash-stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.dash-stat {
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.dash-stat-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9aa0a6;
+}
+
+.dash-stat-value {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #363636;
+    line-height: 1;
+}
+
+.dash-stat-value--sm {
+    font-size: 0.95rem;
+    padding-top: 0.4rem;
+}
+
+.dash-stat-sub {
+    font-size: 0.75rem;
+    color: #9aa0a6;
+}
+
+/* Dernières notes */
+.dash-notes-list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.dash-note-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: #fff;
+    transition: background-color 0.15s ease;
+}
+
+.dash-note-item:last-child {
+    border-bottom: none;
+}
+
+.dash-note-item:hover {
+    background: #f9fafb;
+}
+
+.dash-note-title {
+    flex: 1;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #363636;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dash-note-date {
+    font-size: 0.75rem;
+    color: #9aa0a6;
+    white-space: nowrap;
+}
+
+.dash-note-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #4a4a4a;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+}
+
+.dash-note-btn:hover {
+    background: #f1f4fb;
+    color: #4f6bdc;
+    border-color: rgba(79, 107, 220, 0.3);
+}
+
+/* Applications */
+.dash-apps-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.dash-app-card {
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    padding: 1.25rem;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dash-app-card:hover:not(.is-disabled) {
+    border-color: rgba(79, 107, 220, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.dash-app-card.is-disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.dash-app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dash-app-icon {
+    font-size: 1.1rem;
+    color: #4f6bdc;
+}
+
+.dash-app-icon.is-grey {
+    color: #9aa0a6;
+}
+
+.dash-app-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #363636;
+}
+
+.dash-app-desc {
+    font-size: 0.8rem;
+    color: #7a7a7a;
+    line-height: 1.4;
+}
+
+.dash-app-link {
+    font-size: 0.8rem;
+    color: #4f6bdc;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.25rem;
+}
+
+.dash-soon {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    background: #f5f7fa;
+    color: #9aa0a6;
+    font-weight: 500;
 }
 
 @keyframes fadeInUp {

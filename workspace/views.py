@@ -8,19 +8,24 @@ from .forms import NoteForm
 
 
 def index(request):
+    total_notes = Note.objects.filter(author=request.user).count()
+    recent_notes = Note.objects.filter(author=request.user).order_by("-updated_at")[:3]
+
+    from django.utils import timezone
+    from datetime import timedelta
+
+    une_semaine = timezone.now() - timedelta(days=7)
+    notes_semaine = Note.objects.filter(
+        author=request.user, created_at__gte=une_semaine
+    ).count()
+
     context = {
         "is_workspace": True,
+        "total_notes": total_notes,
+        "recent_notes": recent_notes,
+        "notes_semaine": notes_semaine,
     }
     return render(request, "workspace/index.html", context)
-
-
-# def note_list(request):
-#    notes = Note.objects.filter(author=request.user).order_by("-updated_at")
-#    context = {
-#        "is_workspace": True,
-#        "notes": notes,
-#    }
-#    return render(request, "workspace/note_list.html", context)
 
 
 def note_list(request):

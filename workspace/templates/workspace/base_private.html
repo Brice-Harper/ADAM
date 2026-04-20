@@ -6,42 +6,59 @@
     <div class="columns is-gapless" style="flex: 1; min-height: 0;">
 
         <!-- Sidebar -->
-        <aside class="has-background-light p-4 sidebar">
-            <nav class="menu">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
 
-                <p class="menu-label">Espace personnel</p>
-                <ul class="menu-list">
+                <div class="sidebar-section-label">Espace personnel</div>
+
+                <ul class="sidebar-menu">
                     <li>
-                        <a href="{% url 'workspace_index' %}" class="{% if request.resolver_match.url_name == 'workspace_index' %}is-active{% endif %}">
-                            <i class="fa-regular fa-home mr-2" aria-hidden="true"></i>
+                        <a href="{% url 'workspace_index' %}" class="sidebar-item {% if request.resolver_match.url_name == 'workspace_index' %}is-active{% endif %}">
+                            <span class="sidebar-icon">
+                                <i class="fa-regular fa-house" aria-hidden="true"></i>
+                            </span>
                             Accueil
                         </a>
                     </li>
-
                     <li>
-                        <a href="{% url 'note_list' %}" class="{% if request.resolver_match.url_name == 'note_list' %}is-active{% endif %}">
-                            <i class="fa-regular fa-note-sticky mr-2" aria-hidden="true"></i>
+                        <a href="{% url 'note_list' %}" class="sidebar-item {% if request.resolver_match.url_name == 'note_list' %}is-active{% endif %}">
+                            <span class="sidebar-icon">
+                                <i class="fa-regular fa-note-sticky" aria-hidden="true"></i>
+                            </span>
                             Notes
                         </a>
                     </li>
-
-                    <li>
-                        <a href="{% url 'admin:index' %}" target="_blank">
-                            <i class="fa-solid fa-gears mr-2" aria-hidden="true"></i>
-                            Administration
-                        </a>
-                    </li>
                 </ul>
 
-                <p class="menu-label">À venir</p>
-                <ul class="menu-list">
+                <div class="sidebar-divider"></div>
+
+                <div class="sidebar-section-label">À venir</div>
+
+                <ul class="sidebar-menu">
                     <li>
-                        <span class="has-text-grey">
-                            <i class="fa-solid fa-list-check mr-2" aria-hidden="true"></i>
+                        <span class="sidebar-item is-disabled">
+                            <span class="sidebar-icon">
+                                <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                            </span>
                             Tâches
+                            <span class="sidebar-soon">bientôt</span>
                         </span>
                     </li>
                 </ul>
+
+                <div class="sidebar-bottom">
+                    <div class="sidebar-divider"></div>
+                    <ul class="sidebar-menu">
+                        <li>
+                            <a href="{% url 'admin:index' %}" target="_blank" class="sidebar-item">
+                                <span class="sidebar-icon">
+                                    <i class="fa-solid fa-gears" aria-hidden="true"></i>
+                                </span>
+                                Administration
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
             </nav>
         </aside>
@@ -49,10 +66,8 @@
         <!-- Contenu principal -->
         <div class="sidebar-content">
             <div class="p-5">
-
                 {% block workspace_content %}
                 {% endblock %}
-
             </div>
         </div>
 

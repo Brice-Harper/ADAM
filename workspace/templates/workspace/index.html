@@ -1,49 +1,107 @@
 {% extends "workspace/base_private.html" %}
+{% load humanize %}
 
-{% block title %}Espace privé{% endblock %}
+{% block title %}{{ site_name }} - Accueil{% endblock %}
 
 {% block workspace_content %}
 
-<h2 class="title is-3 mb-5">
-  Accueil de l'espace privé
-</h2>
+<div class="dash-wrapper">
 
-<div class="content mb-5">
-  <p>
-    Bienvenue dans votre espace personnel.
-    Cet espace vous permet d’avoir un aperçu de vos contenus et fonctionnalités.
-  </p>
-</div>
-
-<div class="columns">
-
-  <div class="column is-6">
-    <div class="box">
-      <h3 class="title is-5">
-        <i class="fa-regular fa-note-sticky mr-2" aria-hidden="true"></i>
-        Notes
-      </h3>
-      <p>
-        Consultez, créez et gérez vos notes personnelles.
-      </p>
-      <a href="{% url 'note_list' %}" class="button is-link is-light">
-        <i class="fa-solid fa-arrow-right mr-1" aria-hidden="true"></i>
-        Accéder aux notes
-      </a>
+    <!-- En-tête -->
+    <div class="dash-header">
+        <h2 class="dash-title">Bonjour, {{ user.first_name|default:user.username }} 👋</h2>
+        <p class="dash-subtitle">Voici un aperçu de votre espace personnel.</p>
     </div>
-  </div>
 
-  <div class="column is-6">
-    <div class="box has-text-grey">
-      <h3 class="title is-5">
-        <i class="fa-solid fa-list-check mr-2" aria-hidden="true"></i>
-        Tâches
-      </h3>
-      <p>
-        Cette fonctionnalité sera bientôt disponible.
-      </p>
+    <!-- Stats -->
+    <div>
+        <div class="dash-section-title">Vue d'ensemble</div>
+        <div class="dash-stat-row">
+            <div class="dash-stat">
+                <div class="dash-stat-label">Notes</div>
+                <div class="dash-stat-value">{{ total_notes }}</div>
+                <div class="dash-stat-sub">au total</div>
+            </div>
+            <div class="dash-stat">
+                <div class="dash-stat-label">Dernière note</div>
+                <div class="dash-stat-value dash-stat-value--sm">
+                    {% if recent_notes %}
+                        {{ recent_notes.0.title|truncatechars:20 }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+                <div class="dash-stat-sub">
+                    {% if recent_notes %}
+                        modifiée {{ recent_notes.0.updated_at|naturaltime }}
+                    {% else %}
+                        aucune note
+                    {% endif %}
+                </div>
+            </div>
+            <div class="dash-stat">
+                <div class="dash-stat-label">Cette semaine</div>
+                <div class="dash-stat-value">{{ notes_semaine }}</div>
+                <div class="dash-stat-sub">notes créées</div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <!-- Dernières notes -->
+    <div>
+        <div class="dash-section-title">Dernières notes modifiées</div>
+        {% if recent_notes %}
+            <div class="dash-notes-list">
+                {% for note in recent_notes %}
+                    <div class="dash-note-item">
+                        <div class="dash-note-title">{{ note.title }}</div>
+                        <div class="dash-note-date">{{ note.updated_at|naturaltime }}</div>
+                        <a href="{% url 'note_detail' note.id %}" class="dash-note-btn">
+                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                            Voir
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="notification is-warning is-light">
+                Tu n'as encore aucune note.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Applications -->
+    <div>
+        <div class="dash-section-title">Applications</div>
+        <div class="dash-apps-grid">
+
+            <a href="{% url 'note_list' %}" class="dash-app-card">
+                <div class="dash-app-header">
+                    <span class="dash-app-icon">
+                        <i class="fa-regular fa-note-sticky" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="dash-app-title">Notes</div>
+                <div class="dash-app-desc">Consultez, créez et gérez vos notes personnelles.</div>
+                <div class="dash-app-link">
+                    Accéder aux notes
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </div>
+            </a>
+
+            <div class="dash-app-card is-disabled">
+                <div class="dash-app-header">
+                    <span class="dash-app-icon is-grey">
+                        <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                    </span>
+                    <span class="dash-soon">bientôt</span>
+                </div>
+                <div class="dash-app-title">Tâches</div>
+                <div class="dash-app-desc">Gérez vos tâches et projets personnels.</div>
+            </div>
+
+        </div>
+    </div>
 
 </div>
 
