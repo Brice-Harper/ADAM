@@ -1,33 +1,50 @@
 {% extends "workspace/base_private.html" %}
+{% load humanize %}
 
 {% block workspace_content %}
-    <div class="content">
-        <h2 class="title is-3">{{ note.title }}</h2>
 
-        <p class="is-size-7 has-text-grey">
-            Créée le {{ note.created_at|date:"d/m/Y H:i" }}<br>
-            Dernière modification le {{ note.updated_at|date:"d/m/Y H:i" }}
-        </p>
+    <div class="note-detail-wrapper">
 
-        <hr>
-
-        <div class="box">
-            <div class="content">
-                {{ note.content_rich.html|safe }}
+        <!-- En-tête : titre + actions -->
+        <div class="note-detail-header">
+            <h2 class="note-detail-title">{{ note.title }}</h2>
+            <div class="note-detail-actions">
+                <a href="{% url 'note_update' note.id %}" class="note-detail-btn is-edit">
+                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                    Modifier
+                </a>
+                <a href="{% url 'note_delete' note.id %}" class="note-detail-btn is-danger">
+                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                    Supprimer
+                </a>
             </div>
         </div>
 
-        <div class="buttons mt-4">
-            <a href="{% url 'note_update' note.id %}" class="button is-warning is-light">
-                <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i><span>Modifier</span>
-            </a>
-            <a href="{% url 'note_delete' note.id %}" class="button is-danger is-light">
-                <i class="fa-regular fa-trash-can" aria-hidden="true"></i><span>Supprimer</span>
+        <!-- Métadonnées -->
+        <div class="note-detail-meta">
+            <span class="note-meta-item">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                Créée le {{ note.created_at|date:"d/m/Y à H\hi" }}
+            </span>
+            <span class="note-meta-item">
+                <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                Modifiée {{ note.updated_at|naturaltime }}
+            </span>
+        </div>
+
+        <!-- Contenu -->
+        <div class="note-detail-content">
+            {{ note.content_rich.html|safe }}
+        </div>
+
+        <!-- Retour -->
+        <div class="note-detail-footer">
+            <a href="{% url 'note_list' %}" class="note-detail-btn">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Retour à la liste
             </a>
         </div>
 
-        <div class="mt-4">
-            <a class="button is-light" href="{% url 'note_list' %}">Retour à la liste</a>
-        </div>
     </div>
+
 {% endblock %}

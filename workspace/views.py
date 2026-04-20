@@ -24,13 +24,20 @@ def index(request):
 
 
 def note_list(request):
+    query = request.GET.get("q", "")
     notes_queryset = Note.objects.filter(author=request.user).order_by("-updated_at")
-    paginator = Paginator(notes_queryset, 10)  # Afficher 10 notes par page
+
+    if query:
+        notes_queryset = notes_queryset.filter(title__icontains=query)
+
+    paginator = Paginator(notes_queryset, 10)
     page_number = request.GET.get("page")
     notes = paginator.get_page(page_number)
+
     context = {
         "is_workspace": True,
         "notes": notes,
+        "query": query,
     }
     return render(request, "workspace/note_list.html", context)
 

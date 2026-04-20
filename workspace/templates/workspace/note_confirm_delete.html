@@ -1,19 +1,44 @@
 {% extends "workspace/base_private.html" %}
 
 {% block workspace_content %}
-<div class="content">
-    <h2 class="title is-4 has-text-danger">
-        Supprimer la note
-    </h2>
-    <p>Êtes-vous sûr de vouloir supprimer la note intitulée <strong>{{ note.title }}</strong> ?</p>
-    <p class="has-text-grey is-size-7">Cette action est irréversible.</p>
 
-    <form method="post" class="mt-4">
-        {% csrf_token %}
-        <div class="buttons">
-            <button type="submit" class="button is-danger">Oui, supprimer</button>
-            <a href="{% url 'note_detail' note.id %}" class="button is-light">Annuler</a>
+    <div class="delete-wrapper">
+        <div class="delete-card">
+
+            <!-- En-tête -->
+            <div class="delete-card-header">
+                <div class="delete-icon">
+                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                </div>
+                <h2 class="delete-card-title">Supprimer la note</h2>
+            </div>
+
+            <!-- Corps -->
+            <div class="delete-card-body">
+                <p class="delete-note-name">
+                    Êtes-vous sûr de vouloir supprimer la note <strong>« {{ note.title }} »</strong> ?
+                </p>
+                <p class="delete-warning">
+                    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                    Cette action est irréversible et définitive.
+                </p>
+            </div>
+
+            <!-- Pied de carte -->
+            <div class="delete-card-footer">
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-btn-danger">
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        Oui, supprimer
+                    </button>
+                </form>
+                <a href="{% url 'note_detail' note.id %}" class="delete-btn-cancel">
+                    Annuler
+                </a>
+            </div>
+
         </div>
-    </form>
-</div>
+    </div>
+
 {% endblock %}

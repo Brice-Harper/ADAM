@@ -5,132 +5,186 @@
 
     {% with highlighted_note_id=request.GET.highlight %}
 
-        <div class="content is-flex is-justify-content-space-between is-align-items-center">
-            <h2 class="title is-3 mb-0"><i class="fa-regular fa-note-sticky" aria-hidden="true"></i><span>Mes notes</span></h2>
-            <a href="{% url 'note_create' %}" class="button is-link is-light"><i class="fa-solid fa-plus" aria-hidden="true"></i><span>Nouvelle note</span></a>
+    <div class="notes-wrapper">
+
+        <!-- En-tête -->
+        <div class="notes-header">
+            <h2 class="title is-3 mb-0">
+                <i class="fa-regular fa-note-sticky" aria-hidden="true"></i>
+                Mes notes
+            </h2>
+            <a href="{% url 'note_create' %}" class="button is-link is-light">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                <span>Nouvelle note</span>
+            </a>
+        </div>
+
+        <!-- Barre d'outils : recherche + toggle -->
+        <div class="notes-toolbar">
+            <form method="get" style="flex: 1; display: flex;">
+                <input
+                    type="text"
+                    name="q"
+                    class="notes-search"
+                    placeholder="Rechercher une note..."
+                    value="{{ query }}"
+                    autocomplete="off">
+            </form>
+            <div class="notes-toggle">
+                <button class="notes-toggle-btn is-active" id="btn-grid" title="Vue grille">
+                    <i class="fa-solid fa-grip" aria-hidden="true"></i>
+                </button>
+                <button class="notes-toggle-btn" id="btn-list" title="Vue liste">
+                    <i class="fa-solid fa-list" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
 
         {% if notes %}
-            <div class="columns is-multiline">
+
+            <!-- Vue grille -->
+            <div class="notes-grid" id="view-grid">
                 {% for note in notes %}
-                    <div class="column is-6">
-                        <div class="card note-card {% if highlighted_note_id == note.id|stringformat:'s' %}has-background-info-light{% endif %}">
-
-                            <!--Entête de la carte-->
-                            <header class="card-header">
-                                <a href="{% url 'note_detail' note.id %}" class="card-header-title">
-                                    <i class="fa-regular fa-note-sticky mr-2 aria-hidden="true"></i>
-                                    {{ note.title }}
+                    <div class="note-card {% if highlighted_note_id == note.id|stringformat:'s' %}is-highlighted{% endif %}">
+                        <a href="{% url 'note_detail' note.id %}" class="note-card-title">
+                            {{ note.title }}
+                        </a>
+                        <div class="note-card-preview">
+                            {{ note.content_rich.html|safe|striptags|truncatewords:20 }}
+                        </div>
+                        <div class="note-card-footer">
+                            <span class="note-card-date">
+                                <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                                {{ note.updated_at|naturaltime }}
+                            </span>
+                            <div class="note-card-actions">
+                                <a href="{% url 'note_update' note.id %}" class="note-action-btn">
+                                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                    Modifier
                                 </a>
-
-                                <a href="{% url 'note_detail' note.id %}" class="card-header-icon" aria-label="Voir la note">
-                                    <span class="icon">
-                                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-                                    </span>
+                                <a href="{% url 'note_delete' note.id %}" class="note-action-btn is-danger">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                    Supprimer
                                 </a>
-                            </header>
-
-                            <!--Contenu de la carte-->
-                            <div class="card-content">
-                                <div class="content">
-                                    {{ note.content_rich.html|safe|truncatewords:60 }}
-                                </div>
                             </div>
-
-                            <!--Pied de la carte-->
-                            <footer class="card-footer">
-                                <span class="card-footer-item has-text-grey is-size-7">
-                                    <span class="icon is-small mr-1">
-                                        <i class ="fa-regular fa-calendar" aria-hidden="true"></i>
-                                    </span>
-                                    Créée le {{ note.created_at|date:"d/m/Y H:i" }}
-                                </span>
-                                <span class="card-footer-item has-text-grey is-size-7">
-                                    <span class="icon is-small mr-1">
-                                        <i class ="fa-regular fa-clock" aria-hidden="true"></i>
-                                    </span>
-                                    Modifiée {{ note.updated_at|naturaltime }}
-                                </span>
-                                <span class="card-footer-item note-card-actions">
-                                    <a href="{% url 'note_update' note.id %}">
-                                        <span class="icon is-small">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </span>
-                                        Modifier
-                                    </a>
-                                    <a href="{% url 'note_delete' note.id %}">
-                                        <span class="icon is-small">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </span>
-                                        Supprimer
-                                    </a>
-                                </span>
-                            </footer>
                         </div>
                     </div>
                 {% endfor %}
             </div>
+
+            <!-- Vue liste -->
+            <div class="notes-list" id="view-list" style="display: none;">
+                {% for note in notes %}
+                    <div class="note-list-item {% if highlighted_note_id == note.id|stringformat:'s' %}is-highlighted{% endif %}">
+                        <div class="note-list-content">
+                            <a href="{% url 'note_detail' note.id %}" class="note-list-title">
+                                {{ note.title }}
+                            </a>
+                            <div class="note-list-preview">
+                                {{ note.content_rich.html|safe|striptags|truncatewords:12 }}
+                            </div>
+                        </div>
+                        <span class="note-list-date">
+                            {{ note.updated_at|naturaltime }}
+                        </span>
+                        <div class="note-list-actions">
+                            <a href="{% url 'note_update' note.id %}" class="note-action-btn">
+                                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            </a>
+                            <a href="{% url 'note_delete' note.id %}" class="note-action-btn is-danger">
+                                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
         {% else %}
-            <div class="notification is-warning">
-                Tu n'as encore aucune note.
+            <div class="notification is-warning is-light">
+                {% if query %}
+                    Aucune note ne correspond à "<strong>{{ query }}</strong>".
+                {% else %}
+                    Tu n'as encore aucune note.
+                {% endif %}
             </div>
         {% endif %}
 
+        <!-- Pagination -->
+        {% if notes.has_other_pages %}
+            <nav class="pagination is-centered mt-3" role="navigation" aria-label="pagination">
+                {% if notes.has_previous %}
+                    <a class="pagination-previous" href="?page={{ notes.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                        Page précédente
+                    </a>
+                {% else %}
+                    <a class="pagination-previous" disabled>Page précédente</a>
+                {% endif %}
+
+                {% if notes.has_next %}
+                    <a class="pagination-next" href="?page={{ notes.next_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                        Page suivante
+                    </a>
+                {% else %}
+                    <a class="pagination-next" disabled>Page suivante</a>
+                {% endif %}
+
+                <ul class="pagination-list">
+                    {% for page_num in notes.paginator.page_range %}
+                        {% if page_num == notes.number %}
+                            <li><span class="pagination-link is-current">{{ page_num }}</span></li>
+                        {% else %}
+                            <li>
+                                <a class="pagination-link" href="?page={{ page_num }}{% if query %}&q={{ query }}{% endif %}">
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    </div>
+
     {% endwith %}
 
-    {% if notes.has_other_pages %}
-        <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
-
-            <!-- Page précédente -->
-            {% if notes.has_previous %}
-                <a class="pagination-previous" href="?page={{ notes.previous_page_number }}">
-                    Page précédente
-                </a>
-            {% else %}
-                <a class="pagination-previous" disabled>
-                    Page précédente
-                </a>
-            {% endif %}
-
-            <!-- Page suivante -->
-            {% if notes.has_next %}
-                <a class="pagination-next" href="?page={{ notes.next_page_number }}">
-                    Page suivante
-                </a>
-                {% else %}
-                <a class="pagination-next" disabled>
-                    Page suivante
-                </a>
-            {% endif %}
-
-            <!-- Numéros de pages -->
-            <ul class="pagination-list">
-                {% for page_num in notes.paginator.page_range %}
-                    {% if page_num == notes.number %}
-                        <li>
-                            <span class="pagination-link is-current">
-                                {{ page_num }}
-                            </span>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a class="pagination-link" href="?page={{ page_num }}">
-                                {{ page_num }}
-                            </a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-
-        </nav>
-    {% endif %}
-
+    <!-- Suppression du highlight dans l'URL -->
     {% if request.GET.highlight %}
         <script>
-            // supprime le paramètre "highlight" de l'URL sans recharger la page
             const url = new URL(window.location);
             url.searchParams.delete('highlight');
             window.history.replaceState({}, '', url);
         </script>
     {% endif %}
+
+    <!-- Toggle grille / liste -->
+    <script>
+        const btnGrid = document.getElementById('btn-grid');
+        const btnList = document.getElementById('btn-list');
+        const viewGrid = document.getElementById('view-grid');
+        const viewList = document.getElementById('view-list');
+
+        btnGrid.addEventListener('click', function() {
+            viewGrid.style.display = 'grid';
+            viewList.style.display = 'none';
+            btnGrid.classList.add('is-active');
+            btnList.classList.remove('is-active');
+            localStorage.setItem('notes-view', 'grid');
+        });
+
+        btnList.addEventListener('click', function() {
+            viewList.style.display = 'flex';
+            viewGrid.style.display = 'none';
+            btnList.classList.add('is-active');
+            btnGrid.classList.remove('is-active');
+            localStorage.setItem('notes-view', 'list');
+        });
+
+        // Restaurer la vue préférée au chargement
+        const savedView = localStorage.getItem('notes-view');
+        if (savedView === 'list') {
+            btnList.click();
+        }
+    </script>
+
 {% endblock %}
