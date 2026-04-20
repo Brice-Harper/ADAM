@@ -5,10 +5,11 @@ description = "Assistant Digital pour Applications Multiples"
 authors = [
     {name = "Brice Harper"}
 ]
-requires-python = ">=3.13"
+requires-python = "3.13.5"
 dependencies = [
     "django (>=6.0.4,<7.0.0)",
     "django-quill-editor (>=0.1.42,<0.2.0)",
+    "python-dotenv (>=1.2.2,<2.0.0)",
 ]
 
 
