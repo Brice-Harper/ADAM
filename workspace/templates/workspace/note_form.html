@@ -55,20 +55,6 @@
                     {% endif %}
                 </div>
 
-                <div class="field">
-                    <label class="label" for="{{ form.content.id_for_label }}">
-                        {{ form.content.label }}
-                    </label>
-                    <div class="control">
-                        {{ form.content }}
-                    </div>
-                    {% if form.content.errors %}
-                        <p class="help is-danger">
-                            {{ form.content.errors }}
-                        </p>
-                    {% endif %}
-                </div>
-
                 <div class="field is-grouped mt-5">
                     <div class="control">
                         <button class="button is-link is-light" type="submit">

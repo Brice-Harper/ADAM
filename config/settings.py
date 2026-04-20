@@ -31,6 +31,9 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = []
 
+# Nom du site
+SITE_NAME = "ADAM"
+
 
 # Application definition
 
@@ -72,6 +75,7 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.site_name",
             ],
         },
     },

@@ -1,21 +1,12 @@
 {% extends "core/base.html" %}
 
-{% block title %}Espace Privé{% endblock %}
+{% block title %}{{ site_name }} - Espace Privé{% endblock %}
 
 {% block content %}
     <div class="columns is-gapless" style="flex: 1; min-height: 0;">
 
         <!-- Sidebar -->
-        <aside
-            class="has-background-light p-4"
-            style="
-            position: fixed;
-            top:3.25rem;
-            left: 0;
-            width: 16rem;
-            height: calc(100vh - 3.25rem);
-            border-right: 1px solid #e5e5e5;
-            overflow-y: auto;">
+        <aside class="has-background-light p-4 sidebar">
             <nav class="menu">
 
                 <p class="menu-label">Espace personnel</p>
@@ -56,8 +47,8 @@
         </aside>
 
         <!-- Contenu principal -->
-        <div style="margin-left: 16rem;">
-            <div class="p-5" style="height: 100%; overflow-y: auto;">
+        <div class="sidebar-content">
+            <div class="p-5">
 
                 {% block workspace_content %}
                 {% endblock %}

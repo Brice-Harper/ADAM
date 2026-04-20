@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Espace perso{% endblock %}</title>
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    {{ form.media }}
+    {% block extra_head %}{% endblock %}
 </head>
 
 <body class="has-navbar fixed-top" style="min-height: 100vh; display: flex; flex-direction: column;">
@@ -22,7 +22,7 @@
                     <!-- NAV ESPACE PRIVÉ -->
                     <div class="navbar-brand">
                         <span class="navbar-item">
-                            <strong>Espace personnel</strong>
+                            <strong>{{ site_name }}</strong>
                         </span>
                     </div>
 
@@ -43,7 +43,7 @@
                     <!-- NAVBAR SITE PUBLIC -->
                     <div class="navbar-brand">
                         <a class="navbar-item" href="{% url 'home' %}">
-                        <strong>Espace personnel</strong>
+                        <strong>{{ site_name }}</strong>
                         </a>
                     </div>
 
@@ -57,7 +57,7 @@
                             <a class="navbar-item" href="{% url 'dashboard' %}">
                                 Dashboard
                             </a>
-                            {% if user.is_authenticated and user.username == "brice-harper" %}
+                            {% if user.is_superuser %}
                                 <a class="navbar-item" href="{% url 'workspace_index' %}">
                                     Espace Privé
                                 </a>
@@ -107,11 +107,9 @@
 
     <footer class="footer">
         <div class="content has-text-centered">
-            <p><small>© {% now "Y" %} - Espace personnel</small></p>
+            <p><small>© {% now "Y" %} - {{ site_name }}</small></p>
         </div>
     </footer>
-    {% block extra_js %}
-    {% endblock %}
 
     {% if messages %}
         <div class="toast-container">
@@ -149,5 +147,7 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
+    {% block extra_js %}
+    {% endblock %}
 </body>
 </html>

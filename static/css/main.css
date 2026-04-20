@@ -181,6 +181,20 @@ aside {
     transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
+.sidebar {
+    position: fixed;
+    top: 3.25rem;
+    left: 0;
+    width: 16rem;
+    height: calc(100vh - 3.25rem);
+    border-right: 1px solid #e5e5e5;
+    overflow-y: auto;
+}
+
+.sidebar-content {
+    margin-left: 16rem;
+}
+
 /* =============================
 Formulaires - Amélioration visuelle
 ============================= */
