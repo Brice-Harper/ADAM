@@ -139,3 +139,26 @@ _URL = "home"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = _URL
 LOGOUT_REDIRECT_URL = _URL
+
+QUILL_CONFIGS = {
+    "default": {
+        "theme": "snow",
+        "modules": {
+            "syntax": True,
+            "toolbar": [
+                ["bold", "italic", "underline", "strike"],
+                ["blockquote", "code-block"],
+                [{"header": 1}, {"header": 2}, {"header": 3}],
+                [{"list": "ordered"}, {"list": "bullet"}],
+                [{"indent": "-1"}, {"indent": "+1"}],
+                [{"direction": "rtl"}],
+                [{"size": ["small", False, "large", "huge"]}],
+                [{"color": []}, {"background": []}],
+                [{"font": []}],
+                [{"align": []}],
+                ["link", "image"],
+                ["clean"],
+            ],
+        },
+    }
+}
