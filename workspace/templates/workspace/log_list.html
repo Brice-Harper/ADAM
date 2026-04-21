@@ -108,4 +108,40 @@
 
 </div>
 
+{% if logs.has_other_pages %}
+    <nav class="pagination is-centered mt-3" role="navigation" aria-label="pagination">
+
+        {% if logs.has_previous %}
+            <a class="pagination-previous" href="?page={{ logs.previous_page_number }}{% if action_filter %}&action={{ action_filter }}{% endif %}{% if periode_filter %}&periode={{ periode_filter }}{% endif %}">
+                Page précédente
+            </a>
+        {% else %}
+            <a class="pagination-previous" disabled>Page précédente</a>
+        {% endif %}
+
+        {% if logs.has_next %}
+            <a class="pagination-next" href="?page={{ logs.next_page_number }}{% if action_filter %}&action={{ action_filter }}{% endif %}{% if periode_filter %}&periode={{ periode_filter }}{% endif %}">
+                Page suivante
+            </a>
+        {% else %}
+            <a class="pagination-next" disabled>Page suivante</a>
+        {% endif %}
+
+        <ul class="pagination-list">
+            {% for page_num in logs.paginator.page_range %}
+                {% if page_num == logs.number %}
+                    <li><span class="pagination-link is-current">{{ page_num }}</span></li>
+                {% else %}
+                    <li>
+                        <a class="pagination-link" href="?page={{ page_num }}{% if action_filter %}&action={{ action_filter }}{% endif %}{% if periode_filter %}&periode={{ periode_filter }}{% endif %}">
+                            {{ page_num }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+    </nav>
+{% endif %}
+
 {% endblock %}

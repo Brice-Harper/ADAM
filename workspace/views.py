@@ -121,12 +121,12 @@ def note_delete(request, note_id):
 
 
 def log_list(request):
-    logs = Log.objects.all().order_by("-created_at")
+    logs_queryset = Log.objects.all().order_by("-created_at")
 
     # Filtre par action
     action_filter = request.GET.get("action", "")
     if action_filter:
-        logs = logs.filter(action=action_filter)
+        logs_queryset = logs_queryset.filter(action=action_filter)
 
     # Filtre par période
     periode_filter = request.GET.get("periode", "")
@@ -140,7 +140,12 @@ def log_list(request):
             debut = timezone.now() - timedelta(days=7)
         elif periode_filter == "month":
             debut = timezone.now() - timedelta(days=30)
-        logs = logs.filter(created_at__gte=debut)
+        logs_queryset = logs_queryset.filter(created_at__gte=debut)
+
+    # Pagination
+    paginator = Paginator(logs_queryset, 50)
+    page_number = request.GET.get("page")
+    logs = paginator.get_page(page_number)
 
     # Statistiques
     stats = Log.objects.values("action").annotate(total=Count("id")).order_by("-total")
