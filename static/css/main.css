@@ -1505,3 +1505,183 @@ Suppression d'une note
     background: #f9fafb;
     color: #363636;
 }
+
+
+/* =============================
+Journaux d'activité (Logs)
+============================= */
+
+.logs-wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1.75rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.logs-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.logs-filters {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+}
+
+.logs-filters-form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.logs-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.logs-filter-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9aa0a6;
+}
+
+.logs-filter-select {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: #f9fafb;
+    color: #363636;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+
+.logs-filter-select:focus {
+    outline: none;
+    border-color: #4f6bdc;
+}
+
+.logs-filter-reset {
+    font-size: 0.8rem;
+    color: #9aa0a6;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    margin-top: 1rem;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.logs-filter-reset:hover {
+    color: #f14668;
+    border-color: rgba(241, 70, 104, 0.3);
+}
+
+.logs-list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.log-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: #fff;
+    transition: background-color 0.15s ease;
+}
+
+.log-item:last-child {
+    border-bottom: none;
+}
+
+.log-item:hover {
+    background: #f9fafb;
+}
+
+.log-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.log-icon--login {
+    background: rgba(72, 199, 116, 0.12);
+    color: #48c774;
+}
+
+.log-icon--logout {
+    background: rgba(255, 221, 87, 0.15);
+    color: #c8a400;
+}
+
+.log-icon--note_create {
+    background: rgba(79, 107, 220, 0.12);
+    color: #4f6bdc;
+}
+
+.log-icon--note_update {
+    background: rgba(255, 183, 77, 0.15);
+    color: #e08c00;
+}
+
+.log-icon--note_delete {
+    background: rgba(241, 70, 104, 0.12);
+    color: #f14668;
+}
+
+.log-content {
+    flex: 1;
+    font-size: 0.88rem;
+    color: #363636;
+    min-width: 0;
+}
+
+.log-action {
+    font-weight: 500;
+}
+
+.log-detail {
+    color: #7a7a7a;
+    font-weight: 400;
+}
+
+.log-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.15rem;
+    flex-shrink: 0;
+}
+
+.log-date {
+    font-size: 0.78rem;
+    color: #363636;
+    white-space: nowrap;
+}
+
+.log-relative {
+    font-size: 0.72rem;
+    color: #9aa0a6;
+    white-space: nowrap;
+}

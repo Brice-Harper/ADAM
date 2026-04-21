@@ -1,0 +1,111 @@
+{% extends "workspace/base_private.html" %}
+{% load humanize %}
+
+{% block workspace_content %}
+
+<div class="logs-wrapper">
+
+    <!-- En-tête -->
+    <div class="notes-header">
+        <h2 class="title is-3 mb-0">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+            Journaux d'activité
+        </h2>
+    </div>
+
+    <!-- Statistiques -->
+    <div>
+        <div class="dash-section-title">Vue d'ensemble</div>
+        <div class="logs-stats-grid">
+            {% for stat in stats %}
+                <div class="dash-stat">
+                    <div class="dash-stat-label">
+                        {% for value, label in action_choices %}
+                            {% if value == stat.action %}{{ label }}{% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="dash-stat-value">{{ stat.total }}</div>
+                    <div class="dash-stat-sub">action(s)</div>
+                </div>
+            {% empty %}
+                <p class="has-text-grey">Aucune statistique disponible.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="logs-filters">
+        <form method="get" class="logs-filters-form">
+
+            <div class="logs-filter-group">
+                <label class="logs-filter-label">Type d'action</label>
+                <select name="action" class="logs-filter-select" onchange="this.form.submit()">
+                    <option value="">Toutes les actions</option>
+                    {% for value, label in action_choices %}
+                        <option value="{{ value }}" {% if action_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="logs-filter-group">
+                <label class="logs-filter-label">Période</label>
+                <select name="periode" class="logs-filter-select" onchange="this.form.submit()">
+                    <option value="">Toute la période</option>
+                    <option value="today" {% if periode_filter == 'today' %}selected{% endif %}>Aujourd'hui</option>
+                    <option value="week" {% if periode_filter == 'week' %}selected{% endif %}>7 derniers jours</option>
+                    <option value="month" {% if periode_filter == 'month' %}selected{% endif %}>30 derniers jours</option>
+                </select>
+            </div>
+
+            {% if action_filter or periode_filter %}
+                <a href="{% url 'log_list' %}" class="logs-filter-reset">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    Réinitialiser
+                </a>
+            {% endif %}
+
+        </form>
+    </div>
+
+    <!-- Liste des logs -->
+    {% if logs %}
+        <div class="logs-list">
+            {% for log in logs %}
+                <div class="log-item">
+                    <div class="log-icon log-icon--{{ log.action }}">
+                        {% if log.action == 'login' %}
+                            <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                        {% elif log.action == 'logout' %}
+                            <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                        {% elif log.action == 'note_create' %}
+                            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                        {% elif log.action == 'note_update' %}
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                        {% elif log.action == 'note_delete' %}
+                            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                    <div class="log-content">
+                        <span class="log-action">{{ log.get_action_display }}</span>
+                        {% if log.detail %}
+                            <span class="log-detail">— {{ log.detail }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="log-meta">
+                        <span class="log-date">{{ log.created_at|date:"d/m/Y à H\hi" }}</span>
+                        <span class="log-relative">{{ log.created_at|naturaltime }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="notification is-warning is-light">
+            Aucun log ne correspond à votre recherche.
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

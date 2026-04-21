@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.db.models import Count
 from urllib.parse import urlencode
-from .models import Note
+from .models import Note, Log
 from .forms import NoteForm
+from .utils import log_action
 
 
 def index(request):
@@ -63,6 +65,7 @@ def note_create(request):
             note = form.save(commit=False)
             note.author = request.user
             note.save()
+            log_action(request.user, "note_create", note.title)
             messages.success(request, "Note créée avec succès")
             url = reverse("note_list") + "?" + urlencode({"highlight": note.id})
             return redirect(url)
@@ -85,6 +88,7 @@ def note_update(request, note_id):
         form = NoteForm(request.POST, instance=note)
         if form.is_valid():
             form.save()
+            log_action(request.user, "note_update", note.title)
             messages.success(request, "Note mise à jour avec succès")
             url = reverse("note_list") + "?" + urlencode({"highlight": note.id})
             return redirect(url)
@@ -104,6 +108,7 @@ def note_delete(request, note_id):
     note = get_object_or_404(Note, id=note_id, author=request.user)
 
     if request.method == "POST":
+        log_action(request.user, "note_delete", note.title)
         note.delete()
         messages.success(request, "Note supprimée avec succès")
         return redirect("note_list")
@@ -113,3 +118,39 @@ def note_delete(request, note_id):
         "note": note,
     }
     return render(request, "workspace/note_confirm_delete.html", context)
+
+
+def log_list(request):
+    logs = Log.objects.all().order_by("-created_at")
+
+    # Filtre par action
+    action_filter = request.GET.get("action", "")
+    if action_filter:
+        logs = logs.filter(action=action_filter)
+
+    # Filtre par période
+    periode_filter = request.GET.get("periode", "")
+    if periode_filter:
+        from django.utils import timezone
+        from datetime import timedelta
+
+        if periode_filter == "today":
+            debut = timezone.now().replace(hour=0, minute=0, second=0)
+        elif periode_filter == "week":
+            debut = timezone.now() - timedelta(days=7)
+        elif periode_filter == "month":
+            debut = timezone.now() - timedelta(days=30)
+        logs = logs.filter(created_at__gte=debut)
+
+    # Statistiques
+    stats = Log.objects.values("action").annotate(total=Count("id")).order_by("-total")
+
+    context = {
+        "is_workspace": True,
+        "logs": logs,
+        "stats": stats,
+        "action_filter": action_filter,
+        "periode_filter": periode_filter,
+        "action_choices": Log.ACTION_CHOICES,
+    }
+    return render(request, "workspace/log_list.html", context)
