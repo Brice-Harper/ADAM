@@ -12,90 +12,84 @@
     {% block extra_head %}{% endblock %}
 </head>
 
-<body class="has-navbar fixed-top" style="min-height: 100vh; display: flex; flex-direction: column;">
-    <header class="section">
-        <div class="container">
-            <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-                <div class="container">
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
 
-                    {% if is_workspace %}
-                    <!-- NAV ESPACE PRIVÉ -->
-                    <div class="navbar-brand">
-                        <span class="navbar-item">
-                            <strong>{{ site_name }}</strong>
-                        </span>
-                    </div>
+    <nav class="adam-navbar" role="navigation" aria-label="main navigation">
+        <div class="adam-navbar-inner">
 
-                    <div class="navbar-end">
-                        {% if user.is_authenticated %}
-                        <div class="navbar-item">
-                            <form method="post" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button class="button is-light" type="submit">
-                                    Se déconnecter
-                                </button>
-                            </form>
-                        </div>
-                        {% endif %}
-                    </div>
+            {% if is_workspace %}
+            <!-- NAVBAR ESPACE PRIVÉ -->
+            <div class="adam-navbar-brand">
+                <a href="{% url 'workspace_index' %}" class="adam-brand-link">
+                    <div class="adam-brand-icon">A</div>
+                    <span class="adam-brand-name">{{ site_name }}</span>
+                </a>
+                <span class="adam-brand-context">/ Espace privé</span>
+            </div>
 
-                    {% else %}
-                    <!-- NAVBAR SITE PUBLIC -->
-                    <div class="navbar-brand">
-                        <a class="navbar-item" href="{% url 'home' %}">
-                        <strong>{{ site_name }}</strong>
+            <div class="adam-navbar-actions">
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="adam-btn-logout" type="submit">
+                            Se déconnecter
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
+            {% else %}
+            <!-- NAVBAR PUBLIQUE -->
+            <a href="{% url 'home' %}" class="adam-brand-link">
+                <div class="adam-brand-icon">A</div>
+                <span class="adam-brand-name">{{ site_name }}</span>
+            </a>
+
+            <div class="adam-navbar-links">
+                <a href="{% url 'home' %}" class="adam-nav-link {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">
+                    Accueil
+                </a>
+                <a href="#" class="adam-nav-link">
+                    Blog
+                </a>
+                <a href="#" class="adam-nav-link">
+                    Portfolio
+                </a>
+                <a href="#" class="adam-nav-link">
+                    Contact
+                </a>
+            </div>
+
+            <div class="adam-navbar-actions">
+                {% if user.is_authenticated %}
+                    <span class="adam-nav-user">
+                        Bonjour, <strong>{{ user.first_name|default:user.username }}</strong>
+                    </span>
+                    <div class="adam-nav-divider"></div>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'workspace_index' %}" class="adam-btn-workspace">
+                            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                            Espace privé
                         </a>
-                    </div>
-
-                    <div class="navbar-menu">
-                        <div class="navbar-start">
-                        <a class="navbar-item" href="{% url 'home' %}">
-                            Accueil
-                        </a>
-
-                        {% if user.is_authenticated %}
-                            <a class="navbar-item" href="{% url 'dashboard' %}">
-                                Dashboard
-                            </a>
-                            {% if user.is_superuser %}
-                                <a class="navbar-item" href="{% url 'workspace_index' %}">
-                                    Espace Privé
-                                </a>
-                            {% endif %}
-                        {% endif %}
-                        </div>
-
-                        <div class="navbar-end">
-                        {% if user.is_authenticated %}
-                            <div class="navbar-item">
-                            Bonjour, <strong>{{ user.username }}</strong>
-                            </div>
-
-                            <div class="navbar-item">
-                            <form method="post" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button class="button is-danger is-light" type="submit">
-                                Se déconnecter
-                                </button>
-                            </form>
-                            </div>
-                        {% else %}
-                            <div class="navbar-item">
-                            <a class="button is-link is-light" href="{% url 'login' %}">
-                                Se connecter
-                            </a>
-                            </div>
-                        {% endif %}
-                        </div>
-                    </div>
                     {% endif %}
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="adam-btn-logout" type="submit">
+                            Se déconnecter
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="adam-btn-login">
+                        Se connecter
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
 
-                </div>
-            </nav>
         </div>
-    </header>
+    </nav>
 
-    <main style="flex: 1; min-height: 0;">
+    <main style="flex: 1; min-height: 0; padding-top: 52px;">
         {% if not is_workspace %}
             <div class="container">
         {% endif %}
@@ -105,17 +99,75 @@
         {% endif %}
     </main>
 
-    <footer class="footer">
-        <div class="content has-text-centered">
-            <p><small>© {% now "Y" %} - {{ site_name }}</small></p>
-        </div>
-    </footer>
+    {% if is_workspace %}
+        <!-- FOOTER ESPACE PRIVÉ -->
+        <footer class="adam-footer-private">
+            <div class="adam-footer-private-inner">
+                <span class="adam-footer-copy">© {% now "Y" %} — {{ site_name }}</span>
+                <span class="adam-footer-version">v0.1.0</span>
+            </div>
+        </footer>
+
+        {% else %}
+        <!-- FOOTER PUBLIC -->
+        <footer class="adam-footer-public">
+            <div class="adam-footer-public-inner">
+
+                <div class="adam-footer-top">
+                    <div class="adam-footer-brand">
+                        <div class="adam-footer-brand-row">
+                            <div class="adam-footer-brand-icon">A</div>
+                            <span class="adam-footer-brand-name">{{ site_name }}</span>
+                        </div>
+                        <p class="adam-footer-brand-desc">
+                            Assistant Digital pour Applications Multiples.<br>
+                            Un espace personnel pour gérer, créer et organiser.
+                        </p>
+                    </div>
+
+                    <div class="adam-footer-nav-group">
+                        <div class="adam-footer-nav-title">Compte</div>
+                        {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button class="adam-footer-nav-link" type="submit">
+                                    Se déconnecter
+                                </button>
+                            </form>
+                        {% else %}
+                            <a class="adam-footer-nav-link" href="{% url 'login' %}">
+                                Se connecter
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="adam-footer-bottom">
+                    <span class="adam-footer-copy">© {% now "Y" %} — {{ site_name }}</span>
+                    <span class="adam-footer-made">Fait avec Django & Bulma</span>
+                </div>
+
+            </div>
+        </footer>
+    {% endif %}
 
     {% if messages %}
-        <div class="toast-container">
+        <div class="toast-container" id="toast-container">
             {% for message in messages %}
-                <div class="toast is-{{ message.tags }}">
-                    {{ message }}
+                <div class="toast is-{{ message.tags }}" role="alert">
+                    <div class="toast-icon">
+                        {% if message.tags == 'success' %}
+                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                        {% elif message.tags == 'danger' or message.tags == 'error' %}
+                            <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                    <span class="toast-message">{{ message }}</span>
+                    <div class="toast-bar"></div>
                 </div>
             {% endfor %}
         </div>
@@ -126,28 +178,23 @@
         const toasts = document.querySelectorAll(".toast");
 
         toasts.forEach(function (toast) {
-        // Temps d'affichage (en millisecondes)
-        const displayDuration = 3500;
+            const displayDuration = 3500;
+            const animationDuration = 300;
 
-        // Temps de l'animation de sortie (doit correspondre au CSS)
-        const animationDuration = 300;
-
-        // Lancer la disparition après X secondes
-        setTimeout(function () {
-            toast.classList.add("toast-hide");
-
-            // Supprimer complètement le toast après l'animation
             setTimeout(function () {
-            toast.remove();
-            }, animationDuration);
-
-        }, displayDuration);
+                toast.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+                toast.style.opacity = "0";
+                toast.style.transform = "translateX(10px)";
+                setTimeout(function () {
+                    toast.remove();
+                }, animationDuration);
+            }, displayDuration);
         });
     });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
-    {% block extra_js %}
-    {% endblock %}
+    {% block extra_js %}{% endblock %}
+
 </body>
 </html>
