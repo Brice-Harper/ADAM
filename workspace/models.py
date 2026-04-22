@@ -25,10 +25,12 @@ class Log(models.Model):
 
     ACTION_CHOICES = [
         ("login", "Connexion"),
+        ("login_failed", "Tentative de connexion échouée"),
         ("logout", "Déconnexion"),
         ("note_create", "Création de note"),
         ("note_update", "Modification de note"),
         ("note_delete", "Suppression de note"),
+        ("system", "Evénement système"),
     ]
 
     user = models.ForeignKey(
@@ -42,6 +44,9 @@ class Log(models.Model):
         max_length=50, choices=ACTION_CHOICES, verbose_name="Action"
     )
     detail = models.CharField(max_length=255, blank=True, verbose_name="Détail")
+    ip_adress = models.GenericIPAddressField(
+        null=True, blank=True, verbose_name="Adresse IP"
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date")
 
     class Meta:

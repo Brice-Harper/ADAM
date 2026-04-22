@@ -1630,6 +1630,11 @@ Journaux d'activité (Logs)
     color: #48c774;
 }
 
+.log-icon--login_failed {
+    background: rgba(255, 183, 77, 0.15);
+    color: #e08c00;
+}
+
 .log-icon--logout {
     background: rgba(255, 221, 87, 0.15);
     color: #c8a400;
@@ -1648,6 +1653,11 @@ Journaux d'activité (Logs)
 .log-icon--note_delete {
     background: rgba(241, 70, 104, 0.12);
     color: #f14668;
+}
+
+.log-icon--system {
+    background: rgba(108, 117, 125, 0.12);
+    color: #6c757d
 }
 
 .log-content {
@@ -1684,4 +1694,20 @@ Journaux d'activité (Logs)
     font-size: 0.72rem;
     color: #9aa0a6;
     white-space: nowrap;
+}
+
+.log-ip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: #9aa0a6;
+    margin-left: 0.5rem;
+}
+
+.logs-chart-wrapper {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
 }

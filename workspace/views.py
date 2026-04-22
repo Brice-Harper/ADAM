@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models import Count
+from django.utils import timezone
+from datetime import timedelta, date
 from urllib.parse import urlencode
 from .models import Note, Log
 from .forms import NoteForm
@@ -131,9 +133,6 @@ def log_list(request):
     # Filtre par période
     periode_filter = request.GET.get("periode", "")
     if periode_filter:
-        from django.utils import timezone
-        from datetime import timedelta
-
         if periode_filter == "today":
             debut = timezone.now().replace(hour=0, minute=0, second=0)
         elif periode_filter == "week":
@@ -150,6 +149,23 @@ def log_list(request):
     # Statistiques
     stats = Log.objects.values("action").annotate(total=Count("id")).order_by("-total")
 
+    # Données du graphique - activité des 30 derniers jours
+    aujourd_hui = timezone.now().date()
+    trente_jours = [aujourd_hui - timedelta(days=i) for i in range(29, -1, -1)]
+
+    logs_30_jours = (
+        Log.objects.filter(created_at__date__gte=aujourd_hui - timedelta(days=29))
+        .values("created_at__date")
+        .annotate(total=Count("id"))
+    )
+
+    logs_par_jour = {
+        entry["created_at__date"]: entry["total"] for entry in logs_30_jours
+    }
+
+    graphique_labels = [jour.strftime("%d/%m") for jour in trente_jours]
+    graphique_data = [logs_par_jour.get(jour, 0) for jour in trente_jours]
+
     context = {
         "is_workspace": True,
         "logs": logs,
@@ -157,5 +173,7 @@ def log_list(request):
         "action_filter": action_filter,
         "periode_filter": periode_filter,
         "action_choices": Log.ACTION_CHOICES,
+        "graphique_labels": graphique_labels,
+        "graphique_data": graphique_data,
     }
     return render(request, "workspace/log_list.html", context)
