@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "core",
     "workspace",
+    "tasks",
     "django_quill",
 ]
 

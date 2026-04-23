@@ -12,6 +12,8 @@ from .utils import log_action
 
 
 def index(request):
+    from tasks.models import Task
+
     total_notes = Note.objects.filter(author=request.user).count()
     recent_notes = Note.objects.filter(author=request.user).order_by("-updated_at")[:3]
 
@@ -23,11 +25,20 @@ def index(request):
         author=request.user, created_at__gte=une_semaine
     ).count()
 
+    total_tasks = Task.objects.filter(author=request.user).count()
+    tasks_done = Task.objects.filter(author=request.user, status="done").count()
+    tasks_urgent = Task.objects.filter(
+        author=request.user, priority="urgent", status__in=["todo", "in_progress"]
+    ).count()
+
     context = {
         "is_workspace": True,
         "total_notes": total_notes,
         "recent_notes": recent_notes,
         "notes_semaine": notes_semaine,
+        "total_tasks": total_tasks,
+        "tasks_done": tasks_done,
+        "tasks_urgent": tasks_urgent,
     }
     return render(request, "workspace/index.html", context)
 

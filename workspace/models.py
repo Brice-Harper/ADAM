@@ -30,6 +30,9 @@ class Log(models.Model):
         ("note_create", "Création de note"),
         ("note_update", "Modification de note"),
         ("note_delete", "Suppression de note"),
+        ("task_create", "Création de tâche"),
+        ("task_update", "Modification de tâche"),
+        ("task_delete", "Suppression de tâche"),
         ("system", "Evénement système"),
     ]
 

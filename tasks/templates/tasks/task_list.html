@@ -1,0 +1,258 @@
+{% extends "workspace/base_private.html" %}
+{% load humanize %}
+
+{% block workspace_content %}
+
+<div class="tasks-wrapper">
+
+    <!-- En-tête -->
+    <div class="notes-header">
+        <h2 class="title is-3 mb-0">
+            <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+            Mes tâches
+        </h2>
+        <a href="{% url 'task_create' %}" class="button is-link is-light">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            <span>Nouvelle tâche</span>
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="dash-stat-row">
+        <div class="dash-stat">
+            <div class="dash-stat-label">Total</div>
+            <div class="dash-stat-value">{{ total }}</div>
+            <div class="dash-stat-sub">tâches</div>
+        </div>
+        <div class="dash-stat">
+            <div class="dash-stat-label">Terminées</div>
+            <div class="dash-stat-value">{{ total_done }}</div>
+            <div class="dash-stat-sub">tâches</div>
+        </div>
+        <div class="dash-stat">
+            <div class="dash-stat-label">Urgentes</div>
+            <div class="dash-stat-value">{{ total_urgent }}</div>
+            <div class="dash-stat-sub">en cours</div>
+        </div>
+    </div>
+
+    <!-- Sections intelligentes -->
+    {% if tasks_en_retard %}
+        <div class="tasks-section">
+            <div class="tasks-section-title is-danger">
+                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                En retard ({{ tasks_en_retard.count }})
+            </div>
+            <div class="tasks-list" id="tasks-en-retard">
+                {% for task in tasks_en_retard %}
+                    {% include "tasks/partials/task_item.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if tasks_aujourd_hui %}
+        <div class="tasks-section">
+            <div class="tasks-section-title is-warning">
+                <i class="fa-solid fa-sun" aria-hidden="true"></i>
+                Aujourd'hui ({{ tasks_aujourd_hui.count }})
+            </div>
+            <div class="tasks-list" id="tasks-aujourd-hui">
+                {% for task in tasks_aujourd_hui %}
+                    {% include "tasks/partials/task_item.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if tasks_semaine %}
+        <div class="tasks-section">
+            <div class="tasks-section-title is-info">
+                <i class="fa-solid fa-calendar-week" aria-hidden="true"></i>
+                Cette semaine ({{ tasks_semaine.count }})
+            </div>
+            <div class="tasks-list" id="tasks-semaine">
+                {% for task in tasks_semaine %}
+                    {% include "tasks/partials/task_item.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Filtres -->
+    <div class="logs-filters">
+        <form method="get" class="logs-filters-form">
+            <div class="logs-filter-group">
+                <label class="logs-filter-label">Statut</label>
+                <select name="status" class="logs-filter-select" onchange="this.form.submit()">
+                    <option value="">Tous les statuts</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="logs-filter-group">
+                <label class="logs-filter-label">Priorité</label>
+                <select name="priority" class="logs-filter-select" onchange="this.form.submit()">
+                    <option value="">Toutes les priorités</option>
+                    {% for value, label in priority_choices %}
+                        <option value="{{ value }}" {% if priority_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="logs-filter-group">
+                <label class="logs-filter-label">Catégorie</label>
+                <select name="category" class="logs-filter-select" onchange="this.form.submit()">
+                    <option value="">Toutes les catégories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:'s' %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if status_filter or priority_filter or category_filter %}
+                <a href="{% url 'task_list' %}" class="logs-filter-reset">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    Réinitialiser
+                </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Toggle vue -->
+    <div style="display: flex; justify-content: flex-end;">
+        <div class="notes-toggle">
+            <button class="notes-toggle-btn is-active" id="btn-list" title="Vue liste">
+                <i class="fa-solid fa-list" aria-hidden="true"></i>
+            </button>
+            <button class="notes-toggle-btn" id="btn-kanban" title="Vue Kanban">
+                <i class="fa-solid fa-table-columns" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    {% if tasks %}
+
+        <!-- Vue liste -->
+        <div id="view-list">
+            <div class="tasks-list" id="tasks-all">
+                {% for task in tasks %}
+                    {% include "tasks/partials/task_item.html" %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Vue Kanban -->
+        <div id="view-kanban" style="display: none;">
+            <div class="kanban-board">
+                <div class="kanban-column">
+                    <div class="kanban-column-header is-todo">
+                        <span>À faire</span>
+                        <span class="kanban-count">{{ tasks|length }}</span>
+                    </div>
+                    <div class="kanban-tasks" id="kanban-todo">
+                        {% for task in tasks %}
+                            {% if task.status == 'todo' %}
+                                {% include "tasks/partials/kanban_item.html" %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="kanban-column">
+                    <div class="kanban-column-header is-progress">
+                        <span>En cours</span>
+                    </div>
+                    <div class="kanban-tasks" id="kanban-inprogress">
+                        {% for task in tasks %}
+                            {% if task.status == 'in_progress' %}
+                                {% include "tasks/partials/kanban_item.html" %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="kanban-column">
+                    <div class="kanban-column-header is-done">
+                        <span>Terminées</span>
+                    </div>
+                    <div class="kanban-tasks" id="kanban-done">
+                        {% for task in tasks %}
+                            {% if task.status == 'done' %}
+                                {% include "tasks/partials/kanban_item.html" %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="notification is-warning is-light">
+            {% if status_filter or priority_filter or category_filter %}
+                Aucune tâche ne correspond à votre recherche.
+            {% else %}
+                Tu n'as encore aucune tâche.
+            {% endif %}
+        </div>
+    {% endif %}
+
+</div>
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Toggle vue liste / kanban
+    const btnList = document.getElementById('btn-list');
+    const btnKanban = document.getElementById('btn-kanban');
+    const viewList = document.getElementById('view-list');
+    const viewKanban = document.getElementById('view-kanban');
+
+    btnList.addEventListener('click', function() {
+        viewList.style.display = 'block';
+        viewKanban.style.display = 'none';
+        btnList.classList.add('is-active');
+        btnKanban.classList.remove('is-active');
+        localStorage.setItem('tasks-view', 'list');
+    });
+
+    btnKanban.addEventListener('click', function() {
+        viewKanban.style.display = 'block';
+        viewList.style.display = 'none';
+        btnKanban.classList.add('is-active');
+        btnList.classList.remove('is-active');
+        localStorage.setItem('tasks-view', 'kanban');
+    });
+
+    const savedView = localStorage.getItem('tasks-view');
+    if (savedView === 'kanban') btnKanban.click();
+
+    // Toggle statut d'une tâche
+    document.querySelectorAll('.task-toggle-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const taskId = this.dataset.taskId;
+            fetch(`/app/tasks/${taskId}/toggle/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const item = document.querySelector(`[data-task-id="${taskId}"]`).closest('.task-item');
+                if (data.status === 'done') {
+                    item.classList.add('is-done');
+                } else {
+                    item.classList.remove('is-done');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% endblock %}

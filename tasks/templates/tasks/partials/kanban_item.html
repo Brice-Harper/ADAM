@@ -1,0 +1,35 @@
+<div class="kanban-item priority-{{ task.priority }}" data-task-id="{{ task.id }}">
+
+    <a href="{% url 'task_detail' task.id %}" class="kanban-item-title">
+        {{ task.title }}
+    </a>
+
+    <div class="kanban-item-meta">
+        {% if task.category %}
+            <span class="task-category-badge" style="background: {{ task.category.color }}20; color: {{ task.category.color }};">
+                {{ task.category.name }}
+            </span>
+        {% endif %}
+        {% if task.due_date %}
+            <span class="task-due-date {% if task.due_date < today %}is-overdue{% endif %}">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                {{ task.due_date|date:"d/m/Y" }}
+            </span>
+        {% endif %}
+    </div>
+
+    <div class="kanban-item-footer">
+        <span class="task-priority-badge priority-{{ task.priority }}">
+            {{ task.get_priority_display }}
+        </span>
+        <div class="task-item-actions">
+            <a href="{% url 'task_update' task.id %}" class="note-action-btn">
+                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+            </a>
+            <a href="{% url 'task_delete' task.id %}" class="note-action-btn is-danger">
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+
+</div>

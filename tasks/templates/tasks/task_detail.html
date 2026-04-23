@@ -1,0 +1,107 @@
+{% extends "workspace/base_private.html" %}
+{% load humanize %}
+
+{% block workspace_content %}
+
+<div class="note-detail-wrapper">
+
+    <!-- En-tête -->
+    <div class="note-detail-header">
+        <h2 class="note-detail-title">{{ task.title }}</h2>
+        <div class="note-detail-actions">
+            <a href="{% url 'task_update' task.id %}" class="note-detail-btn is-edit">
+                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                Modifier
+            </a>
+            <a href="{% url 'task_delete' task.id %}" class="note-detail-btn is-danger">
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                Supprimer
+            </a>
+        </div>
+    </div>
+
+    <!-- Métadonnées -->
+    <div class="task-detail-meta">
+        <span class="task-priority-badge priority-{{ task.priority }}">
+            {{ task.get_priority_display }}
+        </span>
+        <span class="task-status-badge status-{{ task.status }}">
+            {{ task.get_status_display }}
+        </span>
+        {% if task.category %}
+            <span class="task-category-badge" style="background: {{ task.category.color }}20; color: {{ task.category.color }};">
+                {{ task.category.name }}
+            </span>
+        {% endif %}
+        {% for label in task.labels.all %}
+            <span class="task-label-badge" style="background: {{ label.color }}20; color: {{ label.color }};">
+                {{ label.name }}
+            </span>
+        {% endfor %}
+        {% if task.due_date %}
+            <span class="note-meta-item">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                Échéance : {{ task.due_date|date:"d/m/Y" }}
+            </span>
+        {% endif %}
+        <span class="note-meta-item">
+            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+            Créée {{ task.created_at|naturaltime }}
+        </span>
+    </div>
+
+    <!-- Description -->
+    {% if task.description %}
+        <div class="note-detail-content">
+            {{ task.description.html|safe }}
+        </div>
+    {% endif %}
+
+    <!-- Sous-tâches -->
+    <div class="task-subtasks">
+        <div class="dash-section-title">
+            Sous-tâches
+            ({{ subtasks|length }})
+        </div>
+
+        {% if subtasks %}
+            <div class="subtasks-list">
+                {% for subtask in subtasks %}
+                    <div class="subtask-item {% if subtask.is_done %}is-done{% endif %}">
+                        <form method="post" action="{% url 'task_detail' task.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="subtask_id" value="{{ subtask.id }}">
+                        </form>
+                        <span class="subtask-title">{{ subtask.title }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Formulaire sous-tâche -->
+        <form method="post" class="subtask-form mt-3">
+            {% csrf_token %}
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    {{ subtask_form.title }}
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-link is-light">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Retour -->
+    <div class="note-detail-footer">
+        <a href="{% url 'task_list' %}" class="note-detail-btn">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Retour à la liste
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

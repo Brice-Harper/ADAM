@@ -1,0 +1,73 @@
+{% extends "workspace/base_private.html" %}
+
+{% block workspace_content %}
+
+<div class="note-form-wrapper">
+
+    <div class="notes-header">
+        <h2 class="title is-3 mb-0">
+            <i class="fa-solid fa-tags" aria-hidden="true"></i>
+            Étiquettes
+        </h2>
+        <a href="{% url 'task_list' %}" class="button is-light">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Retour aux tâches
+        </a>
+    </div>
+
+    <!-- Formulaire création -->
+    <div class="delete-card">
+        <div class="delete-card-header" style="background: #f5f7ff; border-color: rgba(79,107,220,0.15);">
+            <div class="delete-icon" style="background: rgba(79,107,220,0.12); color: #4f6bdc;">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            </div>
+            <h2 class="delete-card-title" style="color: #4f6bdc;">Nouvelle étiquette</h2>
+        </div>
+        <div class="delete-card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="note-form-label">Nom</label>
+                            <div class="control">{{ form.name }}</div>
+                        </div>
+                    </div>
+                    <div class="column is-narrow">
+                        <div class="field">
+                            <label class="note-form-label">Couleur</label>
+                            <div class="control">{{ form.color }}</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="button is-link is-light">
+                    Créer l'étiquette
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Liste des étiquettes -->
+    {% if labels %}
+        <div class="notes-list">
+            {% for label in labels %}
+                <div class="note-list-item">
+                    <span class="task-category-dot" style="background: {{ label.color }};"></span>
+                    <div class="note-list-content">
+                        <span class="note-list-title">{{ label.name }}</span>
+                    </div>
+                    <a href="{% url 'label_delete' label.id %}" class="note-action-btn is-danger">
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="notification is-warning is-light">
+            Aucune étiquette créée pour l'instant.
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

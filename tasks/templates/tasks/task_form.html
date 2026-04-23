@@ -1,0 +1,133 @@
+{% extends "workspace/base_private.html" %}
+
+{% block extra_head %}
+    {{ block.super }}
+    {{ form.media.css }}
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    {{ form.media.js }}
+{% endblock %}
+
+{% block workspace_content %}
+
+<div class="note-form-wrapper">
+
+    <h2 class="note-form-title">
+        {{ page_title|default:"Créer une tâche" }}
+    </h2>
+
+    {% if form.non_field_errors %}
+        <div class="notification is-danger is-light">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Titre -->
+        <div class="field mb-4">
+            <label class="note-form-label" for="{{ form.title.id_for_label }}">
+                {{ form.title.label }}
+            </label>
+            <div class="control">
+                {{ form.title }}
+            </div>
+            {% if form.title.errors %}
+                <p class="help is-danger">{{ form.title.errors }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Description Quill -->
+        <div class="field quill-field mb-4">
+            <label class="note-form-label" for="{{ form.description.id_for_label }}">
+                {{ form.description.label }}
+            </label>
+            <div class="control">
+                {{ form.description }}
+            </div>
+            {% if form.description.errors %}
+                <p class="help is-danger">{{ form.description.errors }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Priorité + Statut -->
+        <div class="columns mb-2">
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label" for="{{ form.priority.id_for_label }}">
+                        {{ form.priority.label }}
+                    </label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            {{ form.priority }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label" for="{{ form.status.id_for_label }}">
+                        {{ form.status.label }}
+                    </label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            {{ form.status }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label" for="{{ form.due_date.id_for_label }}">
+                        {{ form.due_date.label }}
+                    </label>
+                    <div class="control">
+                        {{ form.due_date }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catégorie + Étiquettes -->
+        <div class="columns mb-2">
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label" for="{{ form.category.id_for_label }}">
+                        {{ form.category.label }}
+                    </label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            {{ form.category }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label" for="{{ form.labels.id_for_label }}">
+                        {{ form.labels.label }}
+                    </label>
+                    <div class="control">
+                        {{ form.labels }}
+                    </div>
+                    <p class="help">Maintenez Ctrl pour sélectionner plusieurs étiquettes</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="note-form-actions">
+            <button class="button is-link is-light" type="submit">
+                {{ submit_label|default:"Enregistrer" }}
+            </button>
+            <a class="button is-light" href="{% url 'task_list' %}">
+                Annuler
+            </a>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

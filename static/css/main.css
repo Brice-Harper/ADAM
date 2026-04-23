@@ -1711,3 +1711,342 @@ Journaux d'activité (Logs)
     border-radius: 10px;
     padding: 1.25rem 1.5rem;
 }
+
+/* =============================
+Gestionnaire de tâches
+============================= */
+
+.tasks-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.75rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Sections intelligentes */
+.tasks-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tasks-section-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0;
+}
+
+.tasks-section-title.is-danger { color: #f14668; }
+.tasks-section-title.is-warning { color: #c8a400; }
+.tasks-section-title.is-info { color: #4f6bdc; }
+
+/* Liste des tâches */
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: #fff;
+    transition: background-color 0.15s ease;
+    cursor: grab;
+}
+
+.task-item:last-child { border-bottom: none; }
+.task-item:hover { background: #f9fafb; }
+
+.task-item.is-done {
+    opacity: 0.6;
+}
+
+.task-item.is-done .task-item-title {
+    text-decoration: line-through;
+    color: #9aa0a6;
+}
+
+/* Bordure gauche selon priorité */
+.task-item.priority-urgent { border-left: 3px solid #f14668; }
+.task-item.priority-high { border-left: 3px solid #e08c00; }
+.task-item.priority-normal { border-left: 3px solid #4f6bdc; }
+.task-item.priority-low { border-left: 3px solid #9aa0a6; }
+
+/* Checkbox */
+.task-item-left { flex-shrink: 0; }
+
+.task-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.task-checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #fff;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.task-checkbox.is-checked {
+    background: #48c774;
+    border-color: #48c774;
+}
+
+.task-toggle-btn:hover .task-checkbox:not(.is-checked) {
+    border-color: #48c774;
+    background: rgba(72, 199, 116, 0.1);
+}
+
+/* Contenu de la tâche */
+.task-item-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.task-item-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #363636;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-item-title:hover { color: #4f6bdc; }
+
+.task-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+/* Badges */
+.task-category-badge,
+.task-label-badge {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+}
+
+.task-priority-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+.task-priority-badge.priority-urgent { background: rgba(241,70,104,0.12); color: #f14668; }
+.task-priority-badge.priority-high { background: rgba(224,140,0,0.12); color: #e08c00; }
+.task-priority-badge.priority-normal { background: rgba(79,107,220,0.12); color: #4f6bdc; }
+.task-priority-badge.priority-low { background: rgba(154,160,166,0.12); color: #9aa0a6; }
+
+.task-status-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+.task-status-badge.status-todo { background: rgba(154,160,166,0.12); color: #9aa0a6; }
+.task-status-badge.status-in_progress { background: rgba(79,107,220,0.12); color: #4f6bdc; }
+.task-status-badge.status-done { background: rgba(72,199,116,0.12); color: #48c774; }
+
+.task-due-date {
+    font-size: 0.72rem;
+    color: #9aa0a6;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.task-due-date.is-overdue { color: #f14668; }
+
+/* Actions droite */
+.task-item-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.task-item-actions {
+    display: flex;
+    gap: 0.3rem;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.task-item:hover .task-item-actions { opacity: 1; }
+
+/* Point coloré catégorie */
+.task-category-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Détail tâche */
+.task-detail-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Sous-tâches */
+.task-subtasks {
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    background: #fff;
+}
+
+.subtasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+}
+
+.subtask-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.88rem;
+    color: #363636;
+}
+
+.subtask-item:last-child { border-bottom: none; }
+
+.subtask-item.is-done .subtask-title {
+    text-decoration: line-through;
+    color: #9aa0a6;
+}
+
+/* Vue Kanban */
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.kanban-column {
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f9fafb;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.kanban-column-header {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+    background: #fff;
+}
+
+.kanban-column-header.is-todo { color: #9aa0a6; }
+.kanban-column-header.is-progress { color: #4f6bdc; }
+.kanban-column-header.is-done { color: #48c774; }
+
+.kanban-count {
+    font-size: 0.7rem;
+    background: rgba(0, 0, 0, 0.06);
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    color: #7a7a7a;
+}
+
+.kanban-tasks {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.kanban-item {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    cursor: grab;
+    transition: box-shadow 0.15s ease;
+}
+
+.kanban-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.kanban-item.priority-urgent { border-left: 3px solid #f14668; }
+.kanban-item.priority-high { border-left: 3px solid #e08c00; }
+.kanban-item.priority-normal { border-left: 3px solid #4f6bdc; }
+.kanban-item.priority-low { border-left: 3px solid #9aa0a6; }
+
+.kanban-item-title {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #363636;
+    text-decoration: none;
+    line-height: 1.4;
+}
+
+.kanban-item-title:hover { color: #4f6bdc; }
+
+.kanban-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.kanban-item-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.4rem;
+    border-top: 0.5px solid rgba(0, 0, 0, 0.05);
+}

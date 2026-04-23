@@ -1,0 +1,52 @@
+<div class="task-item {% if task.status == 'done' %}is-done{% endif %} priority-{{ task.priority }}"
+     data-task-id="{{ task.id }}">
+
+    <div class="task-item-left">
+        <button class="task-toggle-btn" data-task-id="{{ task.id }}" title="Marquer comme terminée">
+            <span class="task-checkbox {% if task.status == 'done' %}is-checked{% endif %}">
+                {% if task.status == 'done' %}
+                    <i class="fa-solid fa-check" aria-hidden="true"></i>
+                {% endif %}
+            </span>
+        </button>
+    </div>
+
+    <div class="task-item-content">
+        <a href="{% url 'task_detail' task.id %}" class="task-item-title">
+            {{ task.title }}
+        </a>
+        <div class="task-item-meta">
+            {% if task.category %}
+                <span class="task-category-badge" style="background: {{ task.category.color }}20; color: {{ task.category.color }};">
+                    {{ task.category.name }}
+                </span>
+            {% endif %}
+            {% for label in task.labels.all %}
+                <span class="task-label-badge" style="background: {{ label.color }}20; color: {{ label.color }};">
+                    {{ label.name }}
+                </span>
+            {% endfor %}
+            {% if task.due_date %}
+                <span class="task-due-date {% if task.due_date < today %}is-overdue{% endif %}">
+                    <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                    {{ task.due_date|date:"d/m/Y" }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="task-item-right">
+        <span class="task-priority-badge priority-{{ task.priority }}">
+            {{ task.get_priority_display }}
+        </span>
+        <div class="task-item-actions">
+            <a href="{% url 'task_update' task.id %}" class="note-action-btn">
+                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+            </a>
+            <a href="{% url 'task_delete' task.id %}" class="note-action-btn is-danger">
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+
+</div>

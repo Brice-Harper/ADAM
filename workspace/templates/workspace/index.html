@@ -89,16 +89,21 @@
                 </div>
             </a>
 
-            <div class="dash-app-card is-disabled">
+            <a href="{% url 'task_list' %}" class="dash-app-card">
                 <div class="dash-app-header">
-                    <span class="dash-app-icon is-grey">
+                    <span class="dash-app-icon">
                         <i class="fa-solid fa-list-check" aria-hidden="true"></i>
                     </span>
-                    <span class="dash-soon">bientôt</span>
                 </div>
                 <div class="dash-app-title">Tâches</div>
-                <div class="dash-app-desc">Gérez vos tâches et projets personnels.</div>
-            </div>
+                <div class="dash-app-desc">
+                    {{ total_tasks }} tâche(s) dont {{ tasks_urgent }} urgente(s).
+                </div>
+                <div class="dash-app-link">
+                    Accéder aux tâches
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </div>
+            </a>
 
         </div>
     </div>
