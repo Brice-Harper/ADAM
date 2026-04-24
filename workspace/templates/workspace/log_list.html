@@ -95,6 +95,12 @@
                             <i class="fa-solid fa-pen" aria-hidden="true"></i>
                         {% elif log.action == 'note_delete' %}
                             <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        {% elif log.action == 'task_create' %}
+                            <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                        {% elif log.action == 'task_update' %}
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                        {% elif log.action == 'task_delete' %}
+                            <i class="fa-solid fa-trash" aria-hidden="true"></i>
                         {% elif log.action == 'system' %}
                             <i class="fa-solid fa-gear" aria-hidden="true"></i>
                         {% endif %}

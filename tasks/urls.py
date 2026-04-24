@@ -16,7 +16,28 @@ urlpatterns = [
         views.category_delete,
         name="category_delete",
     ),
+    path(
+        "cateegories/<int:category_id>/update/",
+        views.category_update,
+        name="category_update",
+    ),
+    path("labels/<int:label_id>/update/", views.label_update, name="label_update"),
     path("labels/", views.label_list, name="label_list"),
     path("labels/create/", views.label_create, name="label_create"),
     path("labels/<int:label_id>/delete/", views.label_delete, name="label_delete"),
+    path(
+        "<int:task_id>/subtasks/<int:subtask_id>/toggle/",
+        views.subtask_toggle,
+        name="subtask_toggle",
+    ),
+    path(
+        "<int:task_id>/subtasks/<int:subtask_id>/update/",
+        views.subtask_update,
+        name="subtask_update",
+    ),
+    path(
+        "<int:task_id>/subtasks/<int:subtask_id>/delete/",
+        views.subtask_delete,
+        name="subtask_delete",
+    ),
 ]

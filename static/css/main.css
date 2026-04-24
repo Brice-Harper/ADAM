@@ -626,6 +626,16 @@ Sidebar
     margin-top: auto;
 }
 
+.sidebar-item--sub {
+    padding-left: 1.75rem;
+    font-size: 0.8rem;
+    color: #9aa0a6;
+}
+
+.sidebar-item--sub .sidebar-icon {
+    font-size: 0.75rem;
+}
+
 /* =============================
 Page de Connexion
 ============================= */
@@ -1957,6 +1967,18 @@ Gestionnaire de tâches
     color: #9aa0a6;
 }
 
+.subtask-actions {
+    display: flex;
+    gap: 0.3rem;
+    margin-left: auto;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.subtask-item:hover .subtask-actions {
+    opacity: 1;
+}
+
 /* Vue Kanban */
 .kanban-board {
     display: grid;
@@ -2049,4 +2071,113 @@ Gestionnaire de tâches
     justify-content: space-between;
     padding-top: 0.4rem;
     border-top: 0.5px solid rgba(0, 0, 0, 0.05);
+}
+
+.log-icon--task_create {
+    background: rgba(72, 199, 116, 0.12);
+    color: #48c774;
+}
+
+.log-icon--task_update {
+    background: rgba(255, 183, 77, 0.15);
+    color: #e08c00;
+}
+
+.log-icon--task_delete {
+    background: rgba(241, 70, 104, 0.12);
+    color: #f14668;
+}
+
+
+/* =============================
+Sélecteur de couleur
+============================= */
+
+.color-picker {
+    width: 48px;
+    height: 38px;
+    padding: 2px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: #fff;
+    cursor: pointer;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+    padding: 2px;
+}
+
+.color-picker::-webkit-color-swatch {
+    border-radius: 4px;
+    border: none;
+}
+
+
+/* =============================
+Sélecteur d'étiquettes
+============================= */
+
+.labels-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-height: 90px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    background: #f9fafb;
+}
+
+.labels-picker::-webkit-scrollbar {
+    width: 4px;
+}
+
+.labels-picker::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.labels-picker::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+}
+
+.label-badge-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    white-space: nowrap;
+    color: #4a4a4a;
+}
+
+.label-badge-picker:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.label-badge-picker.is-selected {
+    font-weight: 600;
+}
+
+.label-badge-picker .badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.label-badge-picker .badge-check {
+    font-size: 9px;
+    display: none;
+}
+
+.label-badge-picker.is-selected .badge-check {
+    display: inline;
 }

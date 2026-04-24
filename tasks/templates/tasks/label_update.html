@@ -1,0 +1,52 @@
+{% extends "workspace/base_private.html" %}
+
+{% block workspace_content %}
+
+<div class="note-form-wrapper">
+
+    <h2 class="note-form-title">
+        Modifier l'étiquette
+    </h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label" for="{{ form.name.id_for_label }}">
+                        {{ form.name.label }}
+                    </label>
+                    <div class="control">
+                        {{ form.name }}
+                    </div>
+                    {% if form.name.errors %}
+                        <p class="help is-danger">{{ form.name.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="column is-narrow">
+                <div class="field">
+                    <label class="note-form-label" for="{{ form.color.id_for_label }}">
+                        {{ form.color.label }}
+                    </label>
+                    <div class="control">
+                        {{ form.color }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="note-form-actions">
+            <button class="button is-link is-light" type="submit">
+                Mettre à jour
+            </button>
+            <a class="button is-light" href="{% url 'label_list' %}">
+                Annuler
+            </a>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

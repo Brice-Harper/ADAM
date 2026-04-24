@@ -130,12 +130,15 @@ def task_update(request, task_id):
     else:
         form = TaskForm(instance=task, user=request.user)
 
+    selected_labels_ids = list(task.labels.values_list("id", flat=True))
+
     context = {
         "is_workspace": True,
         "form": form,
         "task": task,
         "page_title": "Modifier la tâche",
         "submit_label": "Mettre à jour",
+        "selected_label_ids": selected_labels_ids,
     }
     return render(request, "tasks/task_form.html", context)
 
@@ -263,3 +266,83 @@ def label_delete(request, label_id):
         "label": label,
     }
     return render(request, "tasks/label_confirm_delete.html", context)
+
+
+@require_POST
+def subtask_toggle(request, task_id, subtask_id):
+    task = get_object_or_404(Task, id=task_id, author=request.user)
+    subtask = get_object_or_404(SubTask, id=subtask_id, task=task)
+    subtask.is_done = not subtask.is_done
+    subtask.save()
+    return JsonResponse({"is_done": subtask.is_done})
+
+
+def subtask_update(request, task_id, subtask_id):
+    task = get_object_or_404(Task, id=task_id, author=request.user)
+    subtask = get_object_or_404(SubTask, id=subtask_id, task=task)
+
+    if request.method == "POST":
+        form = SubTaskForm(request.POST, instance=subtask)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Sous-tâche mise à jour avec succès")
+            return redirect("task_detail", task_id=task.id)
+    else:
+        form = SubTaskForm(instance=subtask)
+
+    context = {
+        "is_workspace": True,
+        "form": form,
+        "task": task,
+        "subtask": subtask,
+    }
+    return render(request, "tasks/subtask_form.html", context)
+
+
+@require_POST
+def subtask_delete(request, task_id, subtask_id):
+    task = get_object_or_404(Task, id=task_id, author=request.user)
+    subtask = get_object_or_404(SubTask, id=subtask_id, task=task)
+    subtask.delete()
+    messages.success(request, "Sous-tâche supprimée avec succès")
+    return redirect("task_detail", task_id=task.id)
+
+
+def category_update(request, category_id):
+    category = get_object_or_404(Category, id=category_id, author=request.user)
+
+    if request.method == "POST":
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Catégorie mise à jour avec succès")
+            return redirect("category_list")
+    else:
+        form = CategoryForm(instance=category)
+
+    context = {
+        "is_workspace": True,
+        "form": form,
+        "category": category,
+    }
+    return render(request, "tasks/category_update.html", context)
+
+
+def label_update(request, label_id):
+    label = get_object_or_404(Label, id=label_id, author=request.user)
+
+    if request.method == "POST":
+        form = LabelForm(request.POST, instance=label)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Étiquette mise à jour avec succès")
+            return redirect("label_list")
+    else:
+        form = LabelForm(instance=label)
+
+    context = {
+        "is_workspace": True,
+        "form": form,
+        "label": label,
+    }
+    return render(request, "tasks/label_update.html", context)

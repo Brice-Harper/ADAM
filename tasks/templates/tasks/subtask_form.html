@@ -1,0 +1,42 @@
+{% extends "workspace/base_private.html" %}
+
+{% block workspace_content %}
+
+<div class="note-form-wrapper">
+
+    <h2 class="note-form-title">
+        Modifier la sous-tâche
+    </h2>
+
+    <p class="has-text-grey is-size-7 mb-4">
+        Tâche parente : <strong>{{ task.title }}</strong>
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="field">
+            <label class="note-form-label" for="{{ form.title.id_for_label }}">
+                {{ form.title.label }}
+            </label>
+            <div class="control">
+                {{ form.title }}
+            </div>
+            {% if form.title.errors %}
+                <p class="help is-danger">{{ form.title.errors }}</p>
+            {% endif %}
+        </div>
+
+        <div class="note-form-actions">
+            <button class="button is-link is-light" type="submit">
+                Mettre à jour
+            </button>
+            <a class="button is-light" href="{% url 'task_detail' task.id %}">
+                Annuler
+            </a>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

@@ -13,7 +13,9 @@ class CategoryForm(forms.ModelForm):
         self.fields["name"].widget.attrs.update(
             {"class": "input", "placeholder": "Nom de la catégorie"}
         )
-        self.fields["color"].widget.attrs.update({"class": "input", "type": "color"})
+        self.fields["color"].widget = forms.TextInput(
+            attrs={"class": "color-picker", "type": "color"}
+        )
 
 
 class LabelForm(forms.ModelForm):
@@ -26,10 +28,14 @@ class LabelForm(forms.ModelForm):
         self.fields["name"].widget.attrs.update(
             {"class": "input", "placeholder": "Nom de l'étiquette"}
         )
-        self.fields["color"].widget.attrs.update({"class": "input", "type": "color"})
+        self.fields["color"].widget = forms.TextInput(
+            attrs={"class": "color-picker", "type": "color"}
+        )
 
 
 class TaskForm(forms.ModelForm):
+    description = QuillFormField(required=False)
+
     class Meta:
         model = Task
         fields = [

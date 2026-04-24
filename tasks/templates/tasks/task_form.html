@@ -3,10 +3,6 @@
 {% block extra_head %}
     {{ block.super }}
     {{ form.media.css }}
-{% endblock %}
-
-{% block extra_js %}
-    {{ block.super }}
     {{ form.media.js }}
 {% endblock %}
 
@@ -93,6 +89,8 @@
 
         <!-- Catégorie + Étiquettes -->
         <div class="columns mb-2">
+
+            <!-- Catégorie -->
             <div class="column">
                 <div class="field">
                     <label class="note-form-label" for="{{ form.category.id_for_label }}">
@@ -105,17 +103,44 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Étiquettes -->
             <div class="column">
                 <div class="field">
-                    <label class="note-form-label" for="{{ form.labels.id_for_label }}">
-                        {{ form.labels.label }}
-                    </label>
-                    <div class="control">
-                        {{ form.labels }}
+                    <label class="note-form-label">Étiquettes</label>
+
+                    <!-- Champs cachés pour soumettre les valeurs -->
+                    {% for label in form.labels.field.queryset %}
+                        <input type="checkbox"
+                            name="labels"
+                            value="{{ label.id }}"
+                            id="label-{{ label.id }}"
+                            style="display: none;"
+                            {% if label.id in selected_label_ids %}checked{% endif %}>
+                    {% endfor %}
+
+                    <!-- Sélecteur visuel -->
+                    <div class="labels-picker">
+                        {% for label in form.labels.field.queryset %}
+                            <div class="label-badge-picker"
+                                data-label-id="{{ label.id }}"
+                                data-color="{{ label.color }}"
+                                onclick="toggleLabel(this)">
+                                <span class="badge-dot" style="background: {{ label.color }};"></span>
+                                {{ label.name }}
+                                <span class="badge-check">✓</span>
+                            </div>
+                        {% empty %}
+                            <span class="has-text-grey is-size-7">
+                                Aucune étiquette disponible.
+                                <a href="{% url 'label_list' %}">En créer une</a>
+                            </span>
+                        {% endfor %}
                     </div>
-                    <p class="help">Maintenez Ctrl pour sélectionner plusieurs étiquettes</p>
+
                 </div>
             </div>
+
         </div>
 
         <div class="note-form-actions">
@@ -129,5 +154,51 @@
 
     </form>
 </div>
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+function toggleLabel(el) {
+    const labelId = el.dataset.labelId;
+    const color = el.dataset.color;
+    const checkbox = document.getElementById(`label-${labelId}`);
+
+    el.classList.toggle('is-selected');
+
+    if (el.classList.contains('is-selected')) {
+        checkbox.checked = true;
+        el.style.background = color + '20';
+        el.style.borderColor = color;
+        el.style.color = color;
+    } else {
+        checkbox.checked = false;
+        el.style.background = 'transparent';
+        el.style.borderColor = 'rgba(0,0,0,0.1)';
+        el.style.color = '#4a4a4a';
+    }
+}
+
+// Initialiser les badges déjà sélectionnés
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.label-badge-picker').forEach(function(el) {
+        const labelId = el.dataset.labelId;
+        const color = el.dataset.color;
+        const checkbox = document.getElementById(`label-${labelId}`);
+
+        // Style par défaut
+        el.style.borderColor = 'rgba(0,0,0,0.1)';
+        el.style.color = '#4a4a4a';
+
+        // Si déjà sélectionné
+        if (checkbox && checkbox.checked) {
+            el.classList.add('is-selected');
+            el.style.background = color + '20';
+            el.style.borderColor = color;
+            el.style.color = color;
+        }
+    });
+});
+</script>
+{% endblock %}
 
 {% endblock %}

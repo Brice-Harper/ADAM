@@ -56,6 +56,9 @@
                     <div class="note-list-content">
                         <span class="note-list-title">{{ category.name }}</span>
                     </div>
+                    <a href="{% url 'category_update' category.id %}" class="note-action-btn">
+                        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                    </a>
                     <a href="{% url 'category_delete' category.id %}" class="note-action-btn is-danger">
                         <i class="fa-solid fa-trash" aria-hidden="true"></i>
                     </a>

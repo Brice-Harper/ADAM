@@ -60,25 +60,49 @@
     <!-- Sous-tâches -->
     <div class="task-subtasks">
         <div class="dash-section-title">
-            Sous-tâches
-            ({{ subtasks|length }})
+            Sous-tâches ({{ subtasks|length }})
         </div>
 
         {% if subtasks %}
             <div class="subtasks-list">
                 {% for subtask in subtasks %}
-                    <div class="subtask-item {% if subtask.is_done %}is-done{% endif %}">
-                        <form method="post" action="{% url 'task_detail' task.id %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="subtask_id" value="{{ subtask.id }}">
-                        </form>
+                    <div class="subtask-item {% if subtask.is_done %}is-done{% endif %}" id="subtask-{{ subtask.id }}">
+
+                        <!-- Toggle -->
+                        <button class="task-toggle-btn subtask-toggle-btn"
+                                data-subtask-id="{{ subtask.id }}"
+                                data-task-id="{{ task.id }}"
+                                title="Marquer comme terminée">
+                            <span class="task-checkbox {% if subtask.is_done %}is-checked{% endif %}">
+                                {% if subtask.is_done %}
+                                    <i class="fa-solid fa-check" aria-hidden="true"></i>
+                                {% endif %}
+                            </span>
+                        </button>
+
+                        <!-- Titre -->
                         <span class="subtask-title">{{ subtask.title }}</span>
+
+                        <!-- Actions -->
+                        <div class="subtask-actions">
+                            <a href="{% url 'subtask_update' task.id subtask.id %}" class="note-action-btn">
+                                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            </a>
+                            <form method="post" action="{% url 'subtask_delete' task.id subtask.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="note-action-btn is-danger"
+                                        onclick="return confirm('Supprimer cette sous-tâche ?')">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </div>
+
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
 
-        <!-- Formulaire sous-tâche -->
+        <!-- Formulaire ajout sous-tâche -->
         <form method="post" class="subtask-form mt-3">
             {% csrf_token %}
             <div class="field has-addons">
@@ -92,6 +116,7 @@
                 </div>
             </div>
         </form>
+
     </div>
 
     <!-- Retour -->
@@ -103,5 +128,39 @@
     </div>
 
 </div>
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script>
+document.querySelectorAll('.subtask-toggle-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const subtaskId = this.dataset.subtaskId;
+        const taskId = this.dataset.taskId;
+        fetch(`/app/tasks/${taskId}/subtasks/${subtaskId}/toggle/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            const item = document.getElementById(`subtask-${subtaskId}`);
+            const checkbox = this.querySelector('.task-checkbox');
+            if (data.is_done) {
+                item.classList.add('is-done');
+                checkbox.classList.add('is-checked');
+                checkbox.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else {
+                item.classList.remove('is-done');
+                checkbox.classList.remove('is-checked');
+                checkbox.innerHTML = '';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
 
 {% endblock %}
