@@ -1798,6 +1798,25 @@ Gestionnaire de tâches
 /* Checkbox */
 .task-item-left { flex-shrink: 0; }
 
+/* =============================
+Glisser-déposer
+============================= */
+
+.task-item--ghost {
+    opacity: 0.4;
+    background: #f1f4fb;
+}
+
+.task-item--chosen {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border-color: rgba(79, 107, 220, 0.3) !important;
+}
+
+.task-item--drag {
+    opacity: 0.9;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
 .task-toggle-btn {
     background: none;
     border: none;

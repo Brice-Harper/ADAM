@@ -204,13 +204,58 @@
 
 {% block extra_js %}
 {{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
-    // Toggle vue liste / kanban
-    const btnList = document.getElementById('btn-list');
-    const btnKanban = document.getElementById('btn-kanban');
-    const viewList = document.getElementById('view-list');
-    const viewKanban = document.getElementById('view-kanban');
+const csrfToken = '{{ csrf_token }}';
 
+function initSortable(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+
+    Sortable.create(el, {
+        animation: 150,
+        ghostClass: 'task-item--ghost',
+        chosenClass: 'task-item--chosen',
+        dragClass: 'task-item--drag',
+        handle: '.task-item',
+        onEnd: function(evt) {
+            const items = el.querySelectorAll('.task-item');
+            const order = Array.from(items).map((item, index) => ({
+                id: parseInt(item.dataset.taskId),
+                order: index,
+            }));
+
+            fetch('/app/tasks/reorder/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(order),
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status !== 'ok') {
+                    console.error('Erreur lors de la sauvegarde de l\'ordre');
+                }
+            });
+        }
+    });
+}
+
+// Initialiser le glisser-déposer sur toutes les listes
+initSortable('tasks-all');
+initSortable('tasks-en-retard');
+initSortable('tasks-aujourd-hui');
+initSortable('tasks-semaine');
+
+// Toggle vue liste / kanban
+const btnList = document.getElementById('btn-list');
+const btnKanban = document.getElementById('btn-kanban');
+const viewList = document.getElementById('view-list');
+const viewKanban = document.getElementById('view-kanban');
+
+if (btnList && btnKanban) {
     btnList.addEventListener('click', function() {
         viewList.style.display = 'block';
         viewKanban.style.display = 'none';
@@ -229,29 +274,30 @@
 
     const savedView = localStorage.getItem('tasks-view');
     if (savedView === 'kanban') btnKanban.click();
+}
 
-    // Toggle statut d'une tâche
-    document.querySelectorAll('.task-toggle-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            const taskId = this.dataset.taskId;
-            fetch(`/app/tasks/${taskId}/toggle/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                const item = document.querySelector(`[data-task-id="${taskId}"]`).closest('.task-item');
-                if (data.status === 'done') {
-                    item.classList.add('is-done');
-                } else {
-                    item.classList.remove('is-done');
-                }
-            });
+// Toggle statut d'une tâche
+document.querySelectorAll('.task-toggle-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const taskId = this.dataset.taskId;
+        fetch(`/app/tasks/${taskId}/toggle/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            const item = document.querySelector(`[data-task-id="${taskId}"]`).closest('.task-item');
+            if (data.status === 'done') {
+                item.classList.add('is-done');
+            } else {
+                item.classList.remove('is-done');
+            }
         });
     });
+});
 </script>
 {% endblock %}
 
