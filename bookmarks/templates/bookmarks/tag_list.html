@@ -1,0 +1,61 @@
+{% extends "workspace/base_private.html" %}
+
+{% block workspace_content %}
+
+<div class="note-form-wrapper">
+
+    <div class="notes-header">
+        <h2 class="title is-3 mb-0">
+            <i class="fa-solid fa-tags" aria-hidden="true"></i>
+            Tags
+        </h2>
+        <a href="{% url 'bookmark_list' %}" class="button is-light">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Retour aux favoris
+        </a>
+    </div>
+
+    <!-- Formulaire création -->
+    <div class="delete-card">
+        <div class="delete-card-header" style="background: #f5f7ff; border-color: rgba(79,107,220,0.15);">
+            <div class="delete-icon" style="background: rgba(79,107,220,0.12); color: #4f6bdc;">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            </div>
+            <h2 class="delete-card-title" style="color: #4f6bdc;">Nouveau tag</h2>
+        </div>
+        <div class="delete-card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="note-form-label">Nom</label>
+                    <div class="control">{{ form.name }}</div>
+                </div>
+                <button type="submit" class="button is-link is-light mt-3">
+                    Créer le tag
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Liste des tags -->
+    {% if tags %}
+        <div class="notes-list">
+            {% for tag in tags %}
+                <div class="note-list-item">
+                    <span class="bookmark-tag">#{{ tag.name }}</span>
+                    <div class="note-list-content"></div>
+                    <a href="{% url 'tag_delete' tag.id %}" class="note-action-btn is-danger">
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="notification is-warning is-light">
+            Aucun tag créé pour l'instant.
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "workspace/base_private.html" %}
+{% load humanize %}
+
+{% block workspace_content %}
+
+<div class="note-detail-wrapper">
+
+    <!-- En-tête -->
+    <div class="note-detail-header">
+        <h2 class="note-detail-title">{{ bookmark.title }}</h2>
+        <div class="note-detail-actions">
+            <a href="{{ bookmark.url }}" target="_blank" class="note-detail-btn">
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                Ouvrir
+            </a>
+            <a href="{% url 'bookmark_update' bookmark.id %}" class="note-detail-btn is-edit">
+                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                Modifier
+            </a>
+            <a href="{% url 'bookmark_delete' bookmark.id %}" class="note-detail-btn is-danger">
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                Supprimer
+            </a>
+        </div>
+    </div>
+
+    <!-- Métadonnées -->
+    <div class="task-detail-meta">
+        {% if bookmark.collection %}
+            <span class="bookmark-collection" style="color: {{ bookmark.collection.color }};">
+                <i class="fa-solid {{ bookmark.collection.icon }}" aria-hidden="true"></i>
+                {{ bookmark.collection.name }}
+            </span>
+        {% endif %}
+        {% for tag in bookmark.tags.all %}
+            <span class="bookmark-tag">#{{ tag.name }}</span>
+        {% endfor %}
+        <span class="note-meta-item">
+            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+            Ajouté {{ bookmark.created_at|naturaltime }}
+        </span>
+    </div>
+
+    <!-- Image de prévisualisation -->
+    {% if bookmark.image %}
+        <div class="bookmark-detail-image">
+            <img src="{{ bookmark.image }}" alt="{{ bookmark.title }}"
+                 onerror="this.parentElement.style.display='none';">
+        </div>
+    {% endif %}
+
+    <!-- Description -->
+    {% if bookmark.description %}
+        <div class="note-detail-content">
+            <p>{{ bookmark.description }}</p>
+        </div>
+    {% endif %}
+
+    <!-- URL -->
+    <div class="bookmark-detail-url">
+        <i class="fa-solid fa-link" aria-hidden="true"></i>
+        <a href="{{ bookmark.url }}" target="_blank">{{ bookmark.url }}</a>
+    </div>
+
+    <!-- Notes personnelles -->
+    {% if bookmark.notes %}
+        <div>
+            <div class="dash-section-title">Notes personnelles</div>
+            <div class="note-detail-content">
+                {{ bookmark.notes.html|safe }}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Retour -->
+    <div class="note-detail-footer">
+        <a href="{% url 'bookmark_list' %}" class="note-detail-btn">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Retour aux favoris
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

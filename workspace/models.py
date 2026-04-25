@@ -33,6 +33,9 @@ class Log(models.Model):
         ("task_create", "Création de tâche"),
         ("task_update", "Modification de tâche"),
         ("task_delete", "Suppression de tâche"),
+        ("bookmark_create", "Ajout de favori"),
+        ("bookmark_update", "Modification de favori"),
+        ("bookmark_delete", "Suppression de favori"),
         ("system", "Evénement système"),
     ]
 

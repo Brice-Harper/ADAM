@@ -105,6 +105,22 @@
                 </div>
             </a>
 
+            <a href="{% url 'bookmark_list' %}" class="dash-app-card">
+                <div class="dash-app-header">
+                    <span class="dash-app-icon">
+                        <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="dash-app-title">Favoris</div>
+                <div class="dash-app-desc">
+                    {{ total_bookmarks }} favori(s) sauvegardé(s).
+                </div>
+                <div class="dash-app-link">
+                    Accéder aux favoris
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </div>
+            </a>
+
         </div>
     </div>
 

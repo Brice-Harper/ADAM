@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "core",
     "workspace",
     "tasks",
+    "bookmarks",
     "django_quill",
 ]
 

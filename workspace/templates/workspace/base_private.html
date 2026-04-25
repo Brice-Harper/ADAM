@@ -53,6 +53,30 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{% url 'bookmark_list' %}" class="sidebar-item {% if request.resolver_match.url_name == 'bookmark_list' %}is-active{% endif %}">
+                            <span class="sidebar-icon">
+                                <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+                            </span>
+                            Favoris
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'collection_list' %}" class="sidebar-item sidebar-item--sub {% if request.resolver_match.url_name == 'collection_list' %}is-active{% endif %}">
+                            <span class="sidebar-icon">
+                                <i class="fa-solid fa-folder" aria-hidden="true"></i>
+                            </span>
+                            Collections
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'tag_list' %}" class="sidebar-item sidebar-item--sub {% if request.resolver_match.url_name == 'tag_list' %}is-active{% endif %}">
+                            <span class="sidebar-icon">
+                                <i class="fa-solid fa-tags" aria-hidden="true"></i>
+                            </span>
+                            Tags
+                        </a>
+                    </li>
+                    <li>
                         <a href="{% url 'log_list' %}" class="sidebar-item" {% if request.resolver_match.url_name == 'log_list' %}is-active{% endif %}">
                             <span class="sidebar-icon">
                                 <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>

@@ -1,0 +1,164 @@
+{% extends "workspace/base_private.html" %}
+{% load humanize %}
+
+{% block workspace_content %}
+
+<div class="bookmarks-wrapper">
+
+    <!-- En-tête -->
+    <div class="notes-header">
+        <h2 class="title is-3 mb-0">
+            <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+            Mes favoris
+        </h2>
+        <a href="{% url 'bookmark_create' %}" class="button is-link is-light">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            <span>Ajouter un favori</span>
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="dash-stat-row">
+        <div class="dash-stat">
+            <div class="dash-stat-label">Favoris</div>
+            <div class="dash-stat-value">{{ total }}</div>
+            <div class="dash-stat-sub">au total</div>
+        </div>
+        <div class="dash-stat">
+            <div class="dash-stat-label">Collections</div>
+            <div class="dash-stat-value">{{ total_collections }}</div>
+            <div class="dash-stat-sub">créées</div>
+        </div>
+        <div class="dash-stat">
+            <div class="dash-stat-label">Tags</div>
+            <div class="dash-stat-value">{{ total_tags }}</div>
+            <div class="dash-stat-sub">créés</div>
+        </div>
+    </div>
+
+    <!-- Barre de recherche et filtres -->
+    <div class="logs-filters">
+        <form method="get" class="logs-filters-form">
+
+            <input type="text"
+                   name="q"
+                   class="notes-search"
+                   placeholder="Rechercher un favori..."
+                   value="{{ query }}"
+                   autocomplete="off"
+                   style="flex: 1;">
+
+            <div class="logs-filter-group">
+                <label class="logs-filter-label">Collection</label>
+                <select name="collection" class="logs-filter-select" onchange="this.form.submit()">
+                    <option value="">Toutes</option>
+                    {% for collection in collections %}
+                        <option value="{{ collection.id }}"
+                            {% if collection_id == collection.id|stringformat:'s' %}selected{% endif %}>
+                            {{ collection.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="logs-filter-group">
+                <label class="logs-filter-label">Tag</label>
+                <select name="tag" class="logs-filter-select" onchange="this.form.submit()">
+                    <option value="">Tous</option>
+                    {% for tag in tags %}
+                        <option value="{{ tag.id }}"
+                            {% if tag_id == tag.id|stringformat:'s' %}selected{% endif %}>
+                            {{ tag.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% if query or collection_id or tag_id %}
+                <a href="{% url 'bookmark_list' %}" class="logs-filter-reset">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    Réinitialiser
+                </a>
+            {% endif %}
+
+        </form>
+    </div>
+
+    <!-- Liste des favoris -->
+    {% if bookmarks %}
+        <div class="bookmarks-list">
+            {% for bookmark in bookmarks %}
+                <div class="bookmark-item">
+
+                    <!-- Image -->
+                    <div class="bookmark-image">
+                        {% if bookmark.image %}
+                            <img src="{{ bookmark.image }}" alt="{{ bookmark.title }}"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="bookmark-image-placeholder" style="display:none;">
+                                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                            </div>
+                        {% else %}
+                            <div class="bookmark-image-placeholder">
+                                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Contenu -->
+                    <div class="bookmark-content">
+                        <a href="{{ bookmark.url }}" target="_blank" class="bookmark-title">
+                            {{ bookmark.title }}
+                        </a>
+                        {% if bookmark.description %}
+                            <p class="bookmark-description">{{ bookmark.description|truncatewords:20 }}</p>
+                        {% endif %}
+                        <div class="bookmark-meta">
+                            <span class="bookmark-url">
+                                <i class="fa-solid fa-link" aria-hidden="true"></i>
+                                {{ bookmark.url|truncatechars:50 }}
+                            </span>
+                            {% if bookmark.collection %}
+                                <span class="bookmark-collection" style="color: {{ bookmark.collection.color }};">
+                                    <i class="fa-solid {{ bookmark.collection.icon }}" aria-hidden="true"></i>
+                                    {{ bookmark.collection.name }}
+                                </span>
+                            {% endif %}
+                            {% for tag in bookmark.tags.all %}
+                                <span class="bookmark-tag">#{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="bookmark-actions">
+                        <span class="bookmark-date">{{ bookmark.created_at|naturaltime }}</span>
+                        <div class="bookmark-action-btns">
+                            <a href="{% url 'bookmark_detail' bookmark.id %}" class="note-action-btn">
+                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                            </a>
+                            <a href="{% url 'bookmark_update' bookmark.id %}" class="note-action-btn">
+                                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            </a>
+                            <a href="{% url 'bookmark_delete' bookmark.id %}" class="note-action-btn is-danger">
+                                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="notification is-warning is-light">
+            {% if query or collection_id or tag_id %}
+                Aucun favori ne correspond à votre recherche.
+            {% else %}
+                Tu n'as encore aucun favori.
+            {% endif %}
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

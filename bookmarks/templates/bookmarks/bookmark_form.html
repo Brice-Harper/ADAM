@@ -1,0 +1,250 @@
+{% extends "workspace/base_private.html" %}
+
+{% block extra_head %}
+    {{ block.super }}
+    {{ form.media.css }}
+    {{ form.media.js }}
+{% endblock %}
+
+{% block workspace_content %}
+
+<div class="note-form-wrapper">
+
+    <h2 class="note-form-title">
+        {{ page_title|default:"Ajouter un favori" }}
+    </h2>
+
+    {% if form.non_field_errors %}
+        <div class="notification is-danger is-light">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- URL avec récupération automatique -->
+        <div class="field mb-4">
+            <label class="note-form-label" for="bookmark-url">
+                URL
+            </label>
+            <div class="control has-icons-right">
+                {{ form.url }}
+                <span class="icon is-right" id="url-loader" style="display:none;">
+                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                </span>
+            </div>
+            {% if form.url.errors %}
+                <p class="help is-danger">{{ form.url.errors }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Aperçu de l'image -->
+        <div id="image-preview-wrapper" style="display:none;" class="mb-4">
+            <div class="bookmark-form-preview">
+                <img id="image-preview" src="" alt="Aperçu">
+            </div>
+        </div>
+
+        <!-- Titre -->
+        <div class="field mb-4">
+            <label class="note-form-label" for="bookmark-title">
+                {{ form.title.label }}
+            </label>
+            <div class="control">
+                {{ form.title }}
+            </div>
+            {% if form.title.errors %}
+                <p class="help is-danger">{{ form.title.errors }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Description -->
+        <div class="field mb-4">
+            <label class="note-form-label" for="bookmark-description">
+                {{ form.description.label }}
+            </label>
+            <div class="control">
+                {{ form.description }}
+            </div>
+        </div>
+
+        <!-- Image URL -->
+        <div class="field mb-4">
+            <label class="note-form-label" for="bookmark-image">
+                {{ form.image.label }}
+            </label>
+            <div class="control">
+                {{ form.image }}
+            </div>
+        </div>
+
+        <!-- Collection + Tags -->
+        <div class="columns mb-2">
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label" for="{{ form.collection.id_for_label }}">
+                        {{ form.collection.label }}
+                    </label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            {{ form.collection }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label">Tags</label>
+                    {% for tag in form.tags.field.queryset %}
+                        <input type="checkbox"
+                               name="tags"
+                               value="{{ tag.id }}"
+                               id="tag-{{ tag.id }}"
+                               style="display: none;"
+                               {% if tag.id in selected_tag_ids %}checked{% endif %}>
+                    {% endfor %}
+                    <div class="labels-picker">
+                        {% for tag in form.tags.field.queryset %}
+                            <div class="label-badge-picker"
+                                 data-tag-id="{{ tag.id }}"
+                                 data-color="#4f6bdc"
+                                 onclick="toggleTag(this)">
+                                #{{ tag.name }}
+                                <span class="badge-check">✓</span>
+                            </div>
+                        {% empty %}
+                            <span class="has-text-grey is-size-7">
+                                Aucun tag disponible.
+                                <a href="{% url 'tag_list' %}">En créer un</a>
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes personnelles -->
+        <div class="field quill-field mb-4">
+            <label class="note-form-label">
+                Notes personnelles
+            </label>
+            <div class="control">
+                {{ form.notes }}
+            </div>
+        </div>
+
+        <div class="note-form-actions">
+            <button class="button is-link is-light" type="submit">
+                {{ submit_label|default:"Enregistrer" }}
+            </button>
+            <a class="button is-light" href="{% url 'bookmark_list' %}">
+                Annuler
+            </a>
+        </div>
+
+    </form>
+</div>
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+// Récupération automatique des métadonnées
+const urlInput = document.getElementById('bookmark-url');
+const titleInput = document.getElementById('bookmark-title');
+const descInput = document.getElementById('bookmark-description');
+const imageInput = document.getElementById('bookmark-image');
+const loader = document.getElementById('url-loader');
+const imagePreview = document.getElementById('image-preview');
+const imagePreviewWrapper = document.getElementById('image-preview-wrapper');
+
+let fetchTimeout = null;
+
+if (urlInput) {
+    urlInput.addEventListener('input', function() {
+        clearTimeout(fetchTimeout);
+        const url = this.value.trim();
+
+        if (!url.startsWith('http')) return;
+
+        // Attendre 800ms après la dernière frappe avant de lancer la requête
+        fetchTimeout = setTimeout(function() {
+            loader.style.display = 'flex';
+
+            fetch(`/app/bookmarks/fetch-metadata/?url=${encodeURIComponent(url)}`)
+                .then(res => res.json())
+                .then(data => {
+                    loader.style.display = 'none';
+
+                    // Remplir uniquement si les champs sont vides
+                    if (data.title && !titleInput.value) {
+                        titleInput.value = data.title;
+                    }
+                    if (data.description && !descInput.value) {
+                        descInput.value = data.description;
+                    }
+                    if (data.image && !imageInput.value) {
+                        imageInput.value = data.image;
+                        imagePreview.src = data.image;
+                        imagePreviewWrapper.style.display = 'block';
+                    }
+                })
+                .catch(() => {
+                    loader.style.display = 'none';
+                });
+        }, 800);
+    });
+}
+
+// Afficher l'aperçu si une image existe déjà (mode édition)
+if (imageInput && imageInput.value) {
+    imagePreview.src = imageInput.value;
+    imagePreviewWrapper.style.display = 'block';
+}
+
+imageInput.addEventListener('input', function() {
+    if (this.value) {
+        imagePreview.src = this.value;
+        imagePreviewWrapper.style.display = 'block';
+    } else {
+        imagePreviewWrapper.style.display = 'none';
+    }
+});
+
+// Toggle tags
+function toggleTag(el) {
+    const tagId = el.dataset.tagId;
+    const checkbox = document.getElementById(`tag-${tagId}`);
+    el.classList.toggle('is-selected');
+    if (el.classList.contains('is-selected')) {
+        checkbox.checked = true;
+        el.style.background = 'rgba(79,107,220,0.12)';
+        el.style.borderColor = '#4f6bdc';
+        el.style.color = '#4f6bdc';
+    } else {
+        checkbox.checked = false;
+        el.style.background = 'transparent';
+        el.style.borderColor = 'rgba(0,0,0,0.1)';
+        el.style.color = '#4a4a4a';
+    }
+}
+
+// Initialiser les tags déjà sélectionnés
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.label-badge-picker').forEach(function(el) {
+        const tagId = el.dataset.tagId;
+        const checkbox = document.getElementById(`tag-${tagId}`);
+        el.style.borderColor = 'rgba(0,0,0,0.1)';
+        el.style.color = '#4a4a4a';
+        if (checkbox && checkbox.checked) {
+            el.classList.add('is-selected');
+            el.style.background = 'rgba(79,107,220,0.12)';
+            el.style.borderColor = '#4f6bdc';
+            el.style.color = '#4f6bdc';
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% endblock %}

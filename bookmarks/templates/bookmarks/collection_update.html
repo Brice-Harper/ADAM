@@ -1,0 +1,48 @@
+{% extends "workspace/base_private.html" %}
+
+{% block workspace_content %}
+
+<div class="note-form-wrapper">
+
+    <h2 class="note-form-title">Modifier la collection</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label">Nom</label>
+                    <div class="control">{{ form.name }}</div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="note-form-label">Icône Font Awesome</label>
+                    <div class="control">{{ form.icon }}</div>
+                    <p class="help">Ex: fa-folder, fa-star, fa-heart</p>
+                </div>
+            </div>
+            <div class="column is-narrow">
+                <div class="field">
+                    <label class="note-form-label">Couleur</label>
+                    <div class="control">{{ form.color }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label class="note-form-label">Description</label>
+            <div class="control">{{ form.description }}</div>
+        </div>
+        <div class="note-form-actions mt-3">
+            <button type="submit" class="button is-link is-light">
+                Mettre à jour
+            </button>
+            <a href="{% url 'collection_list' %}" class="button is-light">
+                Annuler
+            </a>
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}

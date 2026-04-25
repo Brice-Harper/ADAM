@@ -1,0 +1,96 @@
+{% extends "workspace/base_private.html" %}
+{% load humanize %}
+
+{% block workspace_content %}
+
+<div class="bookmarks-wrapper">
+
+    <div class="note-detail-header">
+        <div>
+            <h2 class="note-detail-title" style="color: {{ collection.color }};">
+                <i class="fa-solid {{ collection.icon }}" aria-hidden="true"></i>
+                {{ collection.name }}
+            </h2>
+            {% if collection.description %}
+                <p class="has-text-grey is-size-7 mt-1">{{ collection.description }}</p>
+            {% endif %}
+        </div>
+        <div class="note-detail-actions">
+            <a href="{% url 'collection_update' collection.id %}" class="note-detail-btn is-edit">
+                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                Modifier
+            </a>
+            <a href="{% url 'collection_delete' collection.id %}" class="note-detail-btn is-danger">
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                Supprimer
+            </a>
+        </div>
+    </div>
+
+    {% if bookmarks %}
+        <div class="bookmarks-list">
+            {% for bookmark in bookmarks %}
+                <div class="bookmark-item">
+                    <div class="bookmark-image">
+                        {% if bookmark.image %}
+                            <img src="{{ bookmark.image }}" alt="{{ bookmark.title }}"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="bookmark-image-placeholder" style="display:none;">
+                                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                            </div>
+                        {% else %}
+                            <div class="bookmark-image-placeholder">
+                                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="bookmark-content">
+                        <a href="{{ bookmark.url }}" target="_blank" class="bookmark-title">
+                            {{ bookmark.title }}
+                        </a>
+                        {% if bookmark.description %}
+                            <p class="bookmark-description">{{ bookmark.description|truncatewords:20 }}</p>
+                        {% endif %}
+                        <div class="bookmark-meta">
+                            <span class="bookmark-url">
+                                <i class="fa-solid fa-link" aria-hidden="true"></i>
+                                {{ bookmark.url|truncatechars:50 }}
+                            </span>
+                            {% for tag in bookmark.tags.all %}
+                                <span class="bookmark-tag">#{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="bookmark-actions">
+                        <span class="bookmark-date">{{ bookmark.created_at|naturaltime }}</span>
+                        <div class="bookmark-action-btns">
+                            <a href="{% url 'bookmark_detail' bookmark.id %}" class="note-action-btn">
+                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                            </a>
+                            <a href="{% url 'bookmark_update' bookmark.id %}" class="note-action-btn">
+                                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            </a>
+                            <a href="{% url 'bookmark_delete' bookmark.id %}" class="note-action-btn is-danger">
+                                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="notification is-warning is-light">
+            Aucun favori dans cette collection.
+        </div>
+    {% endif %}
+
+    <div class="note-detail-footer">
+        <a href="{% url 'collection_list' %}" class="note-detail-btn">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Retour aux collections
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}
