@@ -1,0 +1,70 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ category.name }} — Blog — {{ site_name }}{% endblock %}
+
+{% block content %}
+
+<div class="blog-wrapper">
+    <div class="blog-header">
+        <h1 class="blog-main-title" style="color: {{ category.color }};">
+            {{ category.name }}
+        </h1>
+        {% if category.description %}
+            <p class="blog-subtitle">{{ category.description }}</p>
+        {% endif %}
+    </div>
+
+    {% if articles %}
+        <div class="blog-articles-list">
+            {% for article in articles %}
+                <article class="blog-article-card">
+                    {% if article.get_cover_image %}
+                        <a href="{% url 'article_detail' article.slug %}" class="blog-article-image">
+                            <img src="{{ article.get_cover_image }}" alt="{{ article.title }}">
+                        </a>
+                    {% endif %}
+                    <div class="blog-article-body">
+                        <div class="blog-article-meta">
+                            <span class="blog-article-date">{{ article.published_at|date:"d/m/Y" }}</span>
+                            <span class="blog-meta-sep">·</span>
+                            <span class="blog-article-reading">
+                                <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                                {{ article.reading_time }} min
+                            </span>
+                        </div>
+                        <h2 class="blog-article-title">
+                            <a href="{% url 'article_detail' article.slug %}">{{ article.title }}</a>
+                        </h2>
+                        {% if article.excerpt %}
+                            <p class="blog-article-excerpt">{{ article.excerpt }}</p>
+                        {% endif %}
+                        <div class="blog-article-footer">
+                            <div class="blog-article-tags">
+                                {% for tag in article.tags.all %}
+                                    <a href="{% url 'blog_tag' tag.slug %}" class="bookmark-tag">#{{ tag.name }}</a>
+                                {% endfor %}
+                            </div>
+                            <a href="{% url 'article_detail' article.slug %}" class="blog-read-more">
+                                Lire l'article <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="notification is-warning is-light">
+            Aucun article dans cette catégorie.
+        </div>
+    {% endif %}
+
+    <div class="mt-5">
+        <a href="{% url 'blog_home' %}" class="note-detail-btn">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Retour au blog
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

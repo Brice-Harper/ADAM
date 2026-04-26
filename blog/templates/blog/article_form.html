@@ -1,0 +1,243 @@
+{% extends "workspace/base_private.html" %}
+
+{% block extra_head %}
+    {{ block.super }}
+    {{ form.media.css }}
+    {{ form.media.js }}
+{% endblock %}
+
+{% block workspace_content %}
+
+<div class="note-form-wrapper">
+
+    <h2 class="note-form-title">
+        {{ page_title|default:"Créer un article" }}
+    </h2>
+
+    {% if form.non_field_errors %}
+        <div class="notification is-danger is-light">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Titre -->
+        <div class="field mb-4">
+            <label class="note-form-label" for="{{ form.title.id_for_label }}">
+                {{ form.title.label }}
+            </label>
+            <div class="control">
+                {{ form.title }}
+            </div>
+            {% if form.title.errors %}
+                <p class="help is-danger">{{ form.title.errors }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Extrait -->
+        <div class="field mb-4">
+            <label class="note-form-label" for="{{ form.excerpt.id_for_label }}">
+                {{ form.excerpt.label }}
+                <span class="has-text-grey is-size-7 ml-2">— {{ form.excerpt.help_text }}</span>
+            </label>
+            <div class="control">
+                {{ form.excerpt }}
+            </div>
+        </div>
+
+        <!-- Contenu Quill -->
+        <div class="field quill-field mb-4">
+            <label class="note-form-label">Contenu</label>
+            <div class="control">
+                {{ form.content }}
+            </div>
+        </div>
+
+        <!-- Image de couverture -->
+        <div class="article-form-section">
+            <div class="dash-section-title">Image de couverture</div>
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="note-form-label">Upload depuis l'ordinateur</label>
+                        <div class="control">
+                            {{ form.cover_image }}
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="field">
+                        <label class="note-form-label">{{ form.cover_image_url.label }}</label>
+                        <div class="control">
+                            {{ form.cover_image_url }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Organisation -->
+        <div class="article-form-section">
+            <div class="dash-section-title">Organisation</div>
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="note-form-label">{{ form.category.label }}</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                {{ form.category }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="field">
+                        <label class="note-form-label">Tags</label>
+                        {% for tag in form.tags.field.queryset %}
+                            <input type="checkbox"
+                                   name="tags"
+                                   value="{{ tag.id }}"
+                                   id="tag-{{ tag.id }}"
+                                   style="display: none;"
+                                   {% if tag.id in selected_tag_ids %}checked{% endif %}>
+                        {% endfor %}
+                        <div class="labels-picker">
+                            {% for tag in form.tags.field.queryset %}
+                                <div class="label-badge-picker"
+                                     data-tag-id="{{ tag.id }}"
+                                     data-color="#4f6bdc"
+                                     onclick="toggleTag(this)">
+                                    #{{ tag.name }}
+                                    <span class="badge-check">✓</span>
+                                </div>
+                            {% empty %}
+                                <span class="has-text-grey is-size-7">
+                                    Aucun tag.
+                                    <a href="{% url 'blog_tag_list' %}">En créer un</a>
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-narrow">
+                    <div class="field">
+                        <label class="note-form-label">{{ form.status.label }}</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                {{ form.status }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO -->
+        <div class="article-form-section">
+            <div class="dash-section-title">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                SEO
+            </div>
+            <div class="field mb-3">
+                <label class="note-form-label">
+                    {{ form.seo_title.label }}
+                    <span class="has-text-grey is-size-7 ml-2">— {{ form.seo_title.help_text }}</span>
+                </label>
+                <div class="control">
+                    {{ form.seo_title }}
+                </div>
+                <p class="help" id="seo-title-count">0 / 60 caractères</p>
+            </div>
+            <div class="field mb-3">
+                <label class="note-form-label">
+                    {{ form.seo_description.label }}
+                    <span class="has-text-grey is-size-7 ml-2">— {{ form.seo_description.help_text }}</span>
+                </label>
+                <div class="control">
+                    {{ form.seo_description }}
+                </div>
+                <p class="help" id="seo-desc-count">0 / 160 caractères</p>
+            </div>
+            <div class="field">
+                <label class="note-form-label">{{ form.seo_keywords.label }}</label>
+                <div class="control">
+                    {{ form.seo_keywords }}
+                </div>
+            </div>
+        </div>
+
+        <div class="note-form-actions">
+            <button class="button is-link is-light" type="submit">
+                {{ submit_label|default:"Enregistrer" }}
+            </button>
+            <a class="button is-light" href="{% url 'article_list' %}">
+                Annuler
+            </a>
+        </div>
+
+    </form>
+</div>
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+// Toggle tags
+function toggleTag(el) {
+    const tagId = el.dataset.tagId;
+    const checkbox = document.getElementById(`tag-${tagId}`);
+    el.classList.toggle('is-selected');
+    if (el.classList.contains('is-selected')) {
+        checkbox.checked = true;
+        el.style.background = 'rgba(79,107,220,0.12)';
+        el.style.borderColor = '#4f6bdc';
+        el.style.color = '#4f6bdc';
+    } else {
+        checkbox.checked = false;
+        el.style.background = 'transparent';
+        el.style.borderColor = 'rgba(0,0,0,0.1)';
+        el.style.color = '#4a4a4a';
+    }
+}
+
+// Initialiser les tags sélectionnés
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.label-badge-picker').forEach(function(el) {
+        const tagId = el.dataset.tagId;
+        const checkbox = document.getElementById(`tag-${tagId}`);
+        el.style.borderColor = 'rgba(0,0,0,0.1)';
+        el.style.color = '#4a4a4a';
+        if (checkbox && checkbox.checked) {
+            el.classList.add('is-selected');
+            el.style.background = 'rgba(79,107,220,0.12)';
+            el.style.borderColor = '#4f6bdc';
+            el.style.color = '#4f6bdc';
+        }
+    });
+
+    // Compteurs SEO
+    const seoTitle = document.getElementById('{{ form.seo_title.id_for_label }}');
+    const seoDesc = document.getElementById('{{ form.seo_description.id_for_label }}');
+    const titleCount = document.getElementById('seo-title-count');
+    const descCount = document.getElementById('seo-desc-count');
+
+    function updateCount(input, counter, max) {
+        const len = input.value.length;
+        counter.textContent = `${len} / ${max} caractères`;
+        counter.style.color = len > max ? '#f14668' : '#9aa0a6';
+    }
+
+    if (seoTitle) {
+        updateCount(seoTitle, titleCount, 60);
+        seoTitle.addEventListener('input', () => updateCount(seoTitle, titleCount, 60));
+    }
+    if (seoDesc) {
+        updateCount(seoDesc, descCount, 160);
+        seoDesc.addEventListener('input', () => updateCount(seoDesc, descCount, 160));
+    }
+});
+</script>
+{% endblock %}
+
+{% endblock %}  

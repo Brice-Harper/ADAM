@@ -1,0 +1,156 @@
+{% extends "workspace/base_private.html" %}
+{% load humanize %}
+
+{% block workspace_content %}
+
+<div class="tasks-wrapper">
+
+    <!-- En-tête -->
+    <div class="notes-header">
+        <h2 class="title is-3 mb-0">
+            <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
+            Mes articles
+        </h2>
+        <a href="{% url 'article_create' %}" class="button is-link is-light">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            <span>Nouvel article</span>
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="dash-stat-row">
+        <div class="dash-stat">
+            <div class="dash-stat-label">Total</div>
+            <div class="dash-stat-value">{{ total }}</div>
+            <div class="dash-stat-sub">articles</div>
+        </div>
+        <div class="dash-stat">
+            <div class="dash-stat-label">Publiés</div>
+            <div class="dash-stat-value">{{ total_published }}</div>
+            <div class="dash-stat-sub">en ligne</div>
+        </div>
+        <div class="dash-stat">
+            <div class="dash-stat-label">Brouillons</div>
+            <div class="dash-stat-value">{{ total_draft }}</div>
+            <div class="dash-stat-sub">en cours</div>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="logs-filters">
+        <form method="get" class="logs-filters-form">
+            <input type="text"
+                   name="q"
+                   class="notes-search"
+                   placeholder="Rechercher un article..."
+                   value="{{ query }}"
+                   autocomplete="off"
+                   style="flex: 1;">
+
+            <div class="logs-filter-group">
+                <label class="logs-filter-label">Statut</label>
+                <select name="status" class="logs-filter-select" onchange="this.form.submit()">
+                    <option value="">Tous</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="logs-filter-group">
+                <label class="logs-filter-label">Catégorie</label>
+                <select name="category" class="logs-filter-select" onchange="this.form.submit()">
+                    <option value="">Toutes</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}"
+                            {% if category_filter == category.id|stringformat:'s' %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% if query or status_filter or category_filter %}
+                <a href="{% url 'article_list' %}" class="logs-filter-reset">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    Réinitialiser
+                </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Liste des articles -->
+    {% if articles %}
+        <div class="notes-list">
+            {% for article in articles %}
+                <div class="note-list-item">
+
+                    <!-- Image miniature -->
+                    {% if article.get_cover_image %}
+                        <div class="article-thumb">
+                            <img src="{{ article.get_cover_image }}" alt="{{ article.title }}">
+                        </div>
+                    {% else %}
+                        <div class="article-thumb is-placeholder">
+                            <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
+                        </div>
+                    {% endif %}
+
+                    <!-- Contenu -->
+                    <div class="note-list-content">
+                        <span class="note-list-title">{{ article.title }}</span>
+                        <div class="note-list-preview">
+                            {% if article.category %}
+                                <span style="color: {{ article.category.color }};">
+                                    {{ article.category.name }}
+                                </span>
+                                ·
+                            {% endif %}
+                            {{ article.reading_time }} min de lecture
+                            · {{ article.updated_at|naturaltime }}
+                        </div>
+                    </div>
+
+                    <!-- Statut -->
+                    <span class="article-status-badge status-{{ article.status }}">
+                        {% if article.status == 'published' %}
+                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                        {% elif article.status == 'draft' %}
+                            <i class="fa-solid fa-pencil" aria-hidden="true"></i>
+                        {% else %}
+                            <i class="fa-solid fa-box-archive" aria-hidden="true"></i>
+                        {% endif %}
+                        {{ article.get_status_display }}
+                    </span>
+
+                    <!-- Actions -->
+                    <div class="task-item-actions" style="opacity: 1;">
+                        <a href="{% url 'article_preview' article.id %}" class="note-action-btn" target="_blank" title="Prévisualiser">
+                            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                        </a>
+                        <a href="{% url 'article_update' article.id %}" class="note-action-btn" title="Modifier">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                        </a>
+                        <a href="{% url 'article_delete' article.id %}" class="note-action-btn is-danger" title="Supprimer">
+                            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        </a>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="notification is-warning is-light">
+            {% if query or status_filter or category_filter %}
+                Aucun article ne correspond à votre recherche.
+            {% else %}
+                Tu n'as encore aucun article.
+            {% endif %}
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

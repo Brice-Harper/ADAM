@@ -1,0 +1,37 @@
+{% extends "workspace/base_private.html" %}
+
+{% block workspace_content %}
+
+<div class="delete-wrapper">
+    <div class="delete-card">
+        <div class="delete-card-header">
+            <div class="delete-icon">
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            </div>
+            <h2 class="delete-card-title">Supprimer la catégorie</h2>
+        </div>
+        <div class="delete-card-body">
+            <p class="delete-note-name">
+                Êtes-vous sûr de vouloir supprimer la catégorie <strong>« {{ category.name }} »</strong> ?
+            </p>
+            <p class="delete-warning">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                Les articles associés ne seront pas supprimés mais perdront leur catégorie.
+            </p>
+        </div>
+        <div class="delete-card-footer">
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="delete-btn-danger">
+                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                    Oui, supprimer
+                </button>
+            </form>
+            <a href="{% url 'blog_category_list' %}" class="delete-btn-cancel">
+                Annuler
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

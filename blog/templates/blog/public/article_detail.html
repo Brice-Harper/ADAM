@@ -1,0 +1,132 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+
+{% block title %}{{ article.seo_title|default:article.title }} — {{ site_name }}{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+{% if article.seo_description %}
+    <meta name="description" content="{{ article.seo_description }}">
+{% endif %}
+{% if article.seo_keywords %}
+    <meta name="keywords" content="{{ article.seo_keywords }}">
+{% endif %}
+{% if article.get_cover_image %}
+    <meta property="og:image" content="{{ article.get_cover_image }}">
+{% endif %}
+<meta property="og:title" content="{{ article.seo_title|default:article.title }}">
+<meta property="og:type" content="article">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="article-wrapper">
+
+    {% if is_preview %}
+        <div class="notification is-warning is-light mb-4">
+            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+            Ceci est une <strong>prévisualisation</strong> — l'article n'est pas encore publié.
+        </div>
+    {% endif %}
+
+    <!-- Fil d'Ariane -->
+    <nav class="article-breadcrumb" aria-label="breadcrumb">
+        <a href="{% url 'home' %}">Accueil</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="{% url 'blog_home' %}">Blog</a>
+        {% if article.category %}
+            <span class="breadcrumb-sep">/</span>
+            <a href="{% url 'blog_category' article.category.slug %}"
+               style="color: {{ article.category.color }};">
+                {{ article.category.name }}
+            </a>
+        {% endif %}
+        <span class="breadcrumb-sep">/</span>
+        <span>{{ article.title }}</span>
+    </nav>
+
+    <!-- En-tête de l'article -->
+    <header class="article-header">
+
+        <div class="article-header-meta">
+            {% if article.category %}
+                <a href="{% url 'blog_category' article.category.slug %}"
+                   class="blog-article-category"
+                   style="color: {{ article.category.color }};">
+                    {{ article.category.name }}
+                </a>
+                <span class="blog-meta-sep">·</span>
+            {% endif %}
+            <span class="blog-article-date">
+                {{ article.published_at|date:"d F Y" }}
+            </span>
+            <span class="blog-meta-sep">·</span>
+            <span class="blog-article-reading">
+                <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                {{ article.reading_time }} min de lecture
+            </span>
+        </div>
+
+        <h1 class="article-title">{{ article.title }}</h1>
+
+        {% if article.excerpt %}
+            <p class="article-excerpt">{{ article.excerpt }}</p>
+        {% endif %}
+
+        <div class="article-tags">
+            {% for tag in article.tags.all %}
+                <a href="{% url 'blog_tag' tag.slug %}" class="bookmark-tag">
+                    #{{ tag.name }}
+                </a>
+            {% endfor %}
+        </div>
+
+    </header>
+
+    <!-- Image de couverture -->
+    {% if article.get_cover_image %}
+        <div class="article-cover">
+            <img src="{{ article.get_cover_image }}" alt="{{ article.title }}">
+        </div>
+    {% endif %}
+
+    <!-- Contenu -->
+    <div class="article-content">
+        {{ article.content.html|safe }}
+    </div>
+
+    <!-- Articles similaires -->
+    {% if related_articles %}
+        <div class="article-related">
+            <div class="dash-section-title">Articles similaires</div>
+            <div class="related-articles-grid">
+                {% for related in related_articles %}
+                    <a href="{% url 'article_detail' related.slug %}" class="related-article-card">
+                        {% if related.get_cover_image %}
+                            <div class="related-article-image">
+                                <img src="{{ related.get_cover_image }}" alt="{{ related.title }}">
+                            </div>
+                        {% endif %}
+                        <div class="related-article-body">
+                            <span class="related-article-date">{{ related.published_at|date:"d/m/Y" }}</span>
+                            <span class="related-article-title">{{ related.title }}</span>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Retour -->
+    <div class="article-back">
+        <a href="{% url 'blog_home' %}" class="note-detail-btn">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Retour au blog
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

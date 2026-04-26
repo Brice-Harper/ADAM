@@ -1,0 +1,154 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+
+{% block title %}{{ site_name }} — Blog{% endblock %}
+
+{% block content %}
+
+<div class="blog-wrapper">
+
+    <!-- En-tête -->
+    <div class="blog-header">
+        <h1 class="blog-main-title">Blog</h1>
+        {% if selected_category %}
+            <p class="blog-subtitle">
+                Catégorie : <span style="color: {{ selected_category.color }};">{{ selected_category.name }}</span>
+            </p>
+        {% elif selected_tag %}
+            <p class="blog-subtitle">Tag : #{{ selected_tag.name }}</p>
+        {% else %}
+            <p class="blog-subtitle">Articles, réflexions et tutoriels.</p>
+        {% endif %}
+    </div>
+
+    <!-- Barre de recherche + filtres -->
+    <div class="blog-filters">
+        <form method="get" class="blog-filters-form">
+            <input type="text"
+                   name="q"
+                   class="blog-search"
+                   placeholder="Rechercher un article..."
+                   value="{{ query }}"
+                   autocomplete="off">
+
+            <div class="blog-categories">
+                <a href="{% url 'blog_home' %}"
+                   class="blog-category-btn {% if not category_slug %}is-active{% endif %}">
+                    Tous
+                </a>
+                {% for category in categories %}
+                    <a href="{% url 'blog_home' %}?category={{ category.slug }}"
+                       class="blog-category-btn {% if category_slug == category.slug %}is-active{% endif %}"
+                       style="{% if category_slug == category.slug %}background: {{ category.color }}20; color: {{ category.color }}; border-color: {{ category.color }};{% endif %}">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Liste des articles -->
+    {% if articles %}
+        <div class="blog-articles-list">
+            {% for article in articles %}
+                <article class="blog-article-card">
+
+                    <!-- Image -->
+                    {% if article.get_cover_image %}
+                        <a href="{% url 'article_detail' article.slug %}" class="blog-article-image">
+                            <img src="{{ article.get_cover_image }}" alt="{{ article.title }}">
+                        </a>
+                    {% endif %}
+
+                    <!-- Contenu -->
+                    <div class="blog-article-body">
+                        <div class="blog-article-meta">
+                            {% if article.category %}
+                                <a href="{% url 'blog_category' article.category.slug %}"
+                                   class="blog-article-category"
+                                   style="color: {{ article.category.color }};">
+                                    {{ article.category.name }}
+                                </a>
+                                <span class="blog-meta-sep">·</span>
+                            {% endif %}
+                            <span class="blog-article-date">
+                                {{ article.published_at|date:"d/m/Y" }}
+                            </span>
+                            <span class="blog-meta-sep">·</span>
+                            <span class="blog-article-reading">
+                                <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                                {{ article.reading_time }} min
+                            </span>
+                        </div>
+
+                        <h2 class="blog-article-title">
+                            <a href="{% url 'article_detail' article.slug %}">
+                                {{ article.title }}
+                            </a>
+                        </h2>
+
+                        {% if article.excerpt %}
+                            <p class="blog-article-excerpt">{{ article.excerpt }}</p>
+                        {% endif %}
+
+                        <div class="blog-article-footer">
+                            <div class="blog-article-tags">
+                                {% for tag in article.tags.all %}
+                                    <a href="{% url 'blog_tag' tag.slug %}" class="bookmark-tag">
+                                        #{{ tag.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            <a href="{% url 'article_detail' article.slug %}" class="blog-read-more">
+                                Lire l'article
+                                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </article>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if articles.has_other_pages %}
+            <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
+                {% if articles.has_previous %}
+                    <a class="pagination-previous" href="?page={{ articles.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}">
+                        Page précédente
+                    </a>
+                {% else %}
+                    <a class="pagination-previous" disabled>Page précédente</a>
+                {% endif %}
+                {% if articles.has_next %}
+                    <a class="pagination-next" href="?page={{ articles.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}">
+                        Page suivante
+                    </a>
+                {% else %}
+                    <a class="pagination-next" disabled>Page suivante</a>
+                {% endif %}
+                <ul class="pagination-list">
+                    {% for page_num in articles.paginator.page_range %}
+                        {% if page_num == articles.number %}
+                            <li><span class="pagination-link is-current">{{ page_num }}</span></li>
+                        {% else %}
+                            <li>
+                                <a class="pagination-link" href="?page={{ page_num }}{% if query %}&q={{ query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}">
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    {% else %}
+        <div class="notification is-warning is-light">
+            Aucun article publié pour l'instant.
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

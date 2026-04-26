@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
+    <link rel="preconnect" href="https://font.googleapis.com">
+    <link rel="preconnect" href="https://font.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
@@ -49,7 +52,7 @@
                 <a href="{% url 'home' %}" class="adam-nav-link {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">
                     Accueil
                 </a>
-                <a href="#" class="adam-nav-link">
+                <a href="{% url 'blog_home' %}" class="adam-nav-link {% if request.resolver_match.url_name == 'blog_home' or request.resolver_match.url_name == 'article_detail' %}is-active{% endif %}">
                     Blog
                 </a>
                 <a href="#" class="adam-nav-link">

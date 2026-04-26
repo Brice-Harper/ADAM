@@ -121,6 +121,22 @@
                 </div>
             </a>
 
+            <a href="{% url 'article_list' %}" class="dash-app-card">
+                <div class="dash-app-header">
+                    <span class="dash-app-icon">
+                        <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="dash-app-title">Blog</div>
+                <div class="dash-app-desc">
+                    {{ total_articles }} article(s) dont {{ total_published }} publié(s).
+                </div>
+                <div class="dash-app-link">
+                    Gérer le blog
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </div>
+            </a>
+
         </div>
     </div>
 

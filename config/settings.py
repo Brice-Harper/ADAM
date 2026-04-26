@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "workspace",
     "tasks",
     "bookmarks",
+    "blog",
     "django_quill",
 ]
 
@@ -141,6 +142,9 @@ _URL = "home"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = _URL
 LOGOUT_REDIRECT_URL = _URL
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 QUILL_CONFIGS = {
     "default": {

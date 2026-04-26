@@ -37,6 +37,9 @@ class Log(models.Model):
         ("bookmark_update", "Modification de favori"),
         ("bookmark_delete", "Suppression de favori"),
         ("system", "Evénement système"),
+        ("article_create", "Création d'article"),
+        ("article_update", "Modification d'article"),
+        ("article_delete", "Suppression d'article"),
     ]
 
     user = models.ForeignKey(
