@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.http import JsonResponse
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models import Count
@@ -15,42 +16,112 @@ def index(request):
     from tasks.models import Task
     from bookmarks.models import Bookmark
     from blog.models import Article
-
-    total_notes = Note.objects.filter(author=request.user).count()
-    recent_notes = Note.objects.filter(author=request.user).order_by("-updated_at")[:3]
-
     from django.utils import timezone
-    from datetime import timedelta
+    from datetime import timedelta, date
+    from django.db.models import Count
 
+    aujourd_hui = date.today()
     une_semaine = timezone.now() - timedelta(days=7)
+    trente_jours = timezone.now() - timedelta(days=30)
+
+    # Notes
+    total_notes = Note.objects.filter(author=request.user).count()
     notes_semaine = Note.objects.filter(
         author=request.user, created_at__gte=une_semaine
     ).count()
+    recent_notes = Note.objects.filter(author=request.user).order_by("-updated_at")[:3]
 
+    # Tâches
     total_tasks = Task.objects.filter(author=request.user).count()
-    tasks_done = Task.objects.filter(author=request.user, status="done").count()
     tasks_urgent = Task.objects.filter(
         author=request.user, priority="urgent", status__in=["todo", "in_progress"]
     ).count()
+    tasks_aujourd_hui = Task.objects.filter(
+        author=request.user, due_date=aujourd_hui, status__in=["todo", "in_progress"]
+    ).order_by("priority")[:5]
+    recent_tasks = (
+        Task.objects.filter(author=request.user)
+        .exclude(status="done")
+        .order_by("-updated_at")[:3]
+    )
 
+    # Favoris
     total_bookmarks = Bookmark.objects.filter(author=request.user).count()
+    total_collections = (
+        Bookmark.objects.filter(author=request.user)
+        .values("collection")
+        .distinct()
+        .count()
+    )
+    recent_bookmarks = Bookmark.objects.filter(author=request.user).order_by(
+        "-created_at"
+    )[:3]
 
+    # Articles
     total_articles = Article.objects.filter(author=request.user).count()
     total_published = Article.objects.filter(
         author=request.user, status="published"
     ).count()
+    recent_articles = Article.objects.filter(author=request.user).order_by(
+        "-updated_at"
+    )[:3]
+
+    # Activité 30 jours
+    from workspace.models import Log
+
+    logs_30_jours = (
+        Log.objects.filter(created_at__gte=trente_jours)
+        .extra(select={"day": "date(created_at)"})
+        .values("day")
+        .annotate(total=Count("id"))
+        .order_by("day")
+    )
+
+    from datetime import timedelta as td
+
+    jours = [(timezone.now() - td(days=i)).date() for i in range(29, -1, -1)]
+    logs_par_jour = {str(entry["day"]): entry["total"] for entry in logs_30_jours}
+    activite_data = [logs_par_jour.get(str(jour), 0) for jour in jours]
+    activite_max = max(activite_data) if activite_data else 1
+
+    # Préférences widgets
+    widgets_prefs = request.session.get(
+        "dashboard_widgets",
+        {
+            "today": True,
+            "stats": True,
+            "tasks": True,
+            "bookmarks": True,
+            "articles": True,
+            "activity": True,
+        },
+    )
 
     context = {
         "is_workspace": True,
+        "aujourd_hui": aujourd_hui,
+        # Notes
         "total_notes": total_notes,
-        "recent_notes": recent_notes,
         "notes_semaine": notes_semaine,
+        "recent_notes": recent_notes,
+        # Tâches
         "total_tasks": total_tasks,
-        "tasks_done": tasks_done,
         "tasks_urgent": tasks_urgent,
+        "tasks_aujourd_hui": tasks_aujourd_hui,
+        "recent_tasks": recent_tasks,
+        # Favoris
         "total_bookmarks": total_bookmarks,
+        "total_collections": total_collections,
+        "recent_bookmarks": recent_bookmarks,
+        # Articles
         "total_articles": total_articles,
         "total_published": total_published,
+        "recent_articles": recent_articles,
+        # Activité
+        "activite_data": activite_data,
+        "activite_max": activite_max,
+        # Widgets
+        "widgets": widgets_prefs,
     }
     return render(request, "workspace/index.html", context)
 
@@ -200,3 +271,14 @@ def log_list(request):
         "graphique_data": graphique_data,
     }
     return render(request, "workspace/log_list.html", context)
+
+
+def dashboard_widgets(request):
+    """Sauvegarde les préférences des widgets du dashboard."""
+    if request.method == "POST":
+        import json
+
+        data = json.loads(request.body)
+        request.session["dashboard_widgets"] = data
+        return JsonResponse({"status": "ok"})
+    return JsonResponse({"status": "error"}, status=400)

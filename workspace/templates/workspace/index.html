@@ -1,145 +1,335 @@
 {% extends "workspace/base_private.html" %}
 {% load humanize %}
 
-{% block title %}{{ site_name }} - Accueil{% endblock %}
+{% block title %}{{ site_name }} — Dashboard{% endblock %}
 
 {% block workspace_content %}
 
 <div class="dash-wrapper">
 
     <!-- En-tête -->
-    <div class="dash-header">
-        <h2 class="dash-title">Bonjour, {{ user.first_name|default:user.username }} 👋</h2>
-        <p class="dash-subtitle">Voici un aperçu de votre espace personnel.</p>
+    <div class="dash-top">
+        <div>
+            <div class="dash-greeting">
+                Bonjour, {{ user.first_name|default:user.username }} 👋
+            </div>
+            <div class="dash-date">
+                {{ aujourd_hui|date:"l d F Y" }} · Espace personnel
+            </div>
+        </div>
+        <button class="dash-customize-btn" id="customize-btn">
+            <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+            Personnaliser
+        </button>
     </div>
 
-    <!-- Stats -->
-    <div>
+    <!-- Panel de personnalisation -->
+    <div class="dash-customize-panel" id="customize-panel" style="display:none;">
+        <div class="dash-section-title">Choisir les widgets à afficher</div>
+        <div class="dash-widgets-toggles">
+            <label class="widget-toggle">
+                <input type="checkbox" id="widget-today" {% if widgets.today %}checked{% endif %}>
+                <span>Aujourd'hui</span>
+            </label>
+            <label class="widget-toggle">
+                <input type="checkbox" id="widget-stats" {% if widgets.stats %}checked{% endif %}>
+                <span>Statistiques</span>
+            </label>
+            <label class="widget-toggle">
+                <input type="checkbox" id="widget-tasks" {% if widgets.tasks %}checked{% endif %}>
+                <span>Tâches récentes</span>
+            </label>
+            <label class="widget-toggle">
+                <input type="checkbox" id="widget-bookmarks" {% if widgets.bookmarks %}checked{% endif %}>
+                <span>Favoris récents</span>
+            </label>
+            <label class="widget-toggle">
+                <input type="checkbox" id="widget-articles" {% if widgets.articles %}checked{% endif %}>
+                <span>Articles récents</span>
+            </label>
+            <label class="widget-toggle">
+                <input type="checkbox" id="widget-activity" {% if widgets.activity %}checked{% endif %}>
+                <span>Activité</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Section Aujourd'hui -->
+    <div id="section-today" {% if not widgets.today %}style="display:none;"{% endif %}>
+        <div class="dash-section-title">Aujourd'hui</div>
+        <div class="dash-today-grid">
+
+            <!-- Tâches du jour -->
+            <div class="dash-today-card">
+                <div class="dash-today-header">
+                    <span class="dash-today-title">
+                        <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                        Tâches du jour
+                    </span>
+                    <span class="dash-today-count">{{ tasks_aujourd_hui|length }}</span>
+                </div>
+                {% if tasks_aujourd_hui %}
+                    {% for task in tasks_aujourd_hui %}
+                        <div class="dash-task-row">
+                            <div class="dash-task-dot priority-{{ task.priority }}"></div>
+                            <a href="{% url 'task_detail' task.id %}" class="dash-task-title">
+                                {{ task.title }}
+                            </a>
+                            <span class="task-priority-badge priority-{{ task.priority }}">
+                                {{ task.get_priority_display }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="dash-today-empty">Aucune tâche pour aujourd'hui 🎉</p>
+                {% endif %}
+            </div>
+
+            <!-- Notes récentes -->
+            <div class="dash-today-card">
+                <div class="dash-today-header">
+                    <span class="dash-today-title">
+                        <i class="fa-regular fa-note-sticky" aria-hidden="true"></i>
+                        Notes récentes
+                    </span>
+                    <span class="dash-today-count">{{ recent_notes|length }}</span>
+                </div>
+                {% if recent_notes %}
+                    {% for note in recent_notes %}
+                        <div class="dash-note-row">
+                            <a href="{% url 'note_detail' note.id %}" class="dash-note-row-title">
+                                {{ note.title }}
+                            </a>
+                            <span class="dash-note-row-date">{{ note.updated_at|naturaltime }}</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="dash-today-empty">Aucune note récente.</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Stats globales -->
+    <div id="section-stats" {% if not widgets.stats %}style="display:none;"{% endif %}>
         <div class="dash-section-title">Vue d'ensemble</div>
-        <div class="dash-stat-row">
+        <div class="dash-stat-row" style="grid-template-columns: repeat(4, 1fr);">
             <div class="dash-stat">
-                <div class="dash-stat-label">Notes</div>
+                <div class="dash-stat-icon">
+                    <i class="fa-regular fa-note-sticky" aria-hidden="true"></i>
+                </div>
                 <div class="dash-stat-value">{{ total_notes }}</div>
-                <div class="dash-stat-sub">au total</div>
+                <div class="dash-stat-label">Notes</div>
+                <div class="dash-stat-sub">{{ notes_semaine }} cette semaine</div>
             </div>
             <div class="dash-stat">
-                <div class="dash-stat-label">Dernière note</div>
-                <div class="dash-stat-value dash-stat-value--sm">
-                    {% if recent_notes %}
-                        {{ recent_notes.0.title|truncatechars:20 }}
-                    {% else %}
-                        —
-                    {% endif %}
+                <div class="dash-stat-icon">
+                    <i class="fa-solid fa-list-check" aria-hidden="true"></i>
                 </div>
-                <div class="dash-stat-sub">
-                    {% if recent_notes %}
-                        modifiée {{ recent_notes.0.updated_at|naturaltime }}
-                    {% else %}
-                        aucune note
-                    {% endif %}
-                </div>
+                <div class="dash-stat-value">{{ total_tasks }}</div>
+                <div class="dash-stat-label">Tâches</div>
+                <div class="dash-stat-sub">{{ tasks_urgent }} urgente(s)</div>
             </div>
             <div class="dash-stat">
-                <div class="dash-stat-label">Cette semaine</div>
-                <div class="dash-stat-value">{{ notes_semaine }}</div>
-                <div class="dash-stat-sub">notes créées</div>
+                <div class="dash-stat-icon">
+                    <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+                </div>
+                <div class="dash-stat-value">{{ total_bookmarks }}</div>
+                <div class="dash-stat-label">Favoris</div>
+                <div class="dash-stat-sub">{{ total_collections }} collection(s)</div>
+            </div>
+            <div class="dash-stat">
+                <div class="dash-stat-icon">
+                    <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
+                </div>
+                <div class="dash-stat-value">{{ total_articles }}</div>
+                <div class="dash-stat-label">Articles</div>
+                <div class="dash-stat-sub">{{ total_published }} publié(s)</div>
             </div>
         </div>
     </div>
 
-    <!-- Dernières notes -->
-    <div>
-        <div class="dash-section-title">Dernières notes modifiées</div>
-        {% if recent_notes %}
-            <div class="dash-notes-list">
-                {% for note in recent_notes %}
-                    <div class="dash-note-item">
-                        <div class="dash-note-title">{{ note.title }}</div>
-                        <div class="dash-note-date">{{ note.updated_at|naturaltime }}</div>
-                        <a href="{% url 'note_detail' note.id %}" class="dash-note-btn">
-                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                            Voir
+    <!-- Widgets -->
+    <div class="dash-widgets-grid">
+
+        <!-- Tâches récentes -->
+        <div class="dash-widget" id="section-tasks" {% if not widgets.tasks %}style="display:none;"{% endif %}>
+            <div class="dash-widget-header">
+                <span class="dash-widget-title">
+                    <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                    Dernières tâches
+                </span>
+                <a href="{% url 'task_list' %}" class="dash-widget-link">Voir tout</a>
+            </div>
+            <div class="dash-widget-body">
+                {% if recent_tasks %}
+                    {% for task in recent_tasks %}
+                        <a href="{% url 'task_detail' task.id %}" class="dash-widget-row">
+                            <div class="dash-widget-icon priority-{{ task.priority }}-bg">
+                                <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                            </div>
+                            <div class="dash-widget-content">
+                                <div class="dash-widget-row-title">{{ task.title }}</div>
+                                <div class="dash-widget-row-sub">
+                                    {{ task.get_priority_display }} · {{ task.get_status_display }}
+                                </div>
+                            </div>
+                            <div class="dash-widget-date">
+                                {% if task.due_date %}{{ task.due_date|date:"d/m" }}{% else %}—{% endif %}
+                            </div>
                         </a>
+                    {% endfor %}
+                {% else %}
+                    <p class="dash-widget-empty">Aucune tâche en cours.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Favoris récents -->
+        <div class="dash-widget" id="section-bookmarks" {% if not widgets.bookmarks %}style="display:none;"{% endif %}>
+            <div class="dash-widget-header">
+                <span class="dash-widget-title">
+                    <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+                    Favoris récents
+                </span>
+                <a href="{% url 'bookmark_list' %}" class="dash-widget-link">Voir tout</a>
+            </div>
+            <div class="dash-widget-body">
+                {% if recent_bookmarks %}
+                    {% for bookmark in recent_bookmarks %}
+                        <a href="{{ bookmark.url }}" target="_blank" class="dash-widget-row">
+                            <div class="dash-widget-icon" style="background: var(--accent-soft); color: var(--accent);">
+                                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                            </div>
+                            <div class="dash-widget-content">
+                                <div class="dash-widget-row-title">{{ bookmark.title }}</div>
+                                <div class="dash-widget-row-sub">{{ bookmark.url|truncatechars:40 }}</div>
+                            </div>
+                            <div class="dash-widget-date">{{ bookmark.created_at|naturaltime }}</div>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <p class="dash-widget-empty">Aucun favori récent.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Articles récents -->
+        <div class="dash-widget" id="section-articles" {% if not widgets.articles %}style="display:none;"{% endif %}>
+            <div class="dash-widget-header">
+                <span class="dash-widget-title">
+                    <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
+                    Derniers articles
+                </span>
+                <a href="{% url 'article_list' %}" class="dash-widget-link">Voir tout</a>
+            </div>
+            <div class="dash-widget-body">
+                {% if recent_articles %}
+                    {% for article in recent_articles %}
+                        <a href="{% url 'article_update' article.id %}" class="dash-widget-row">
+                            <div class="dash-widget-icon article-status-icon-{{ article.status }}">
+                                <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
+                            </div>
+                            <div class="dash-widget-content">
+                                <div class="dash-widget-row-title">{{ article.title }}</div>
+                                <div class="dash-widget-row-sub">
+                                    {{ article.get_status_display }}
+                                    {% if article.category %} · {{ article.category.name }}{% endif %}
+                                </div>
+                            </div>
+                            <div class="dash-widget-date">{{ article.updated_at|date:"d/m" }}</div>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <p class="dash-widget-empty">Aucun article récent.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Activité -->
+        <div class="dash-widget" id="section-activity" {% if not widgets.activity %}style="display:none;"{% endif %}>
+            <div class="dash-widget-header">
+                <span class="dash-widget-title">
+                    <i class="fa-solid fa-chart-simple" aria-hidden="true"></i>
+                    Activité (30 jours)
+                </span>
+            </div>
+            <div class="dash-activity-bars" id="activity-bars">
+                {% for value in activite_data %}
+                    <div class="dash-activity-bar"
+                         style="height: {% if activite_max > 0 %}{{ value|floatformat:0 }}{% else %}0{% endif %}%;"
+                         data-value="{{ value }}"
+                         title="{{ value }} action(s)">
                     </div>
                 {% endfor %}
             </div>
-        {% else %}
-            <div class="notification is-warning is-light">
-                Tu n'as encore aucune note.
-            </div>
-        {% endif %}
-    </div>
-
-    <!-- Applications -->
-    <div>
-        <div class="dash-section-title">Applications</div>
-        <div class="dash-apps-grid">
-
-            <a href="{% url 'note_list' %}" class="dash-app-card">
-                <div class="dash-app-header">
-                    <span class="dash-app-icon">
-                        <i class="fa-regular fa-note-sticky" aria-hidden="true"></i>
-                    </span>
-                </div>
-                <div class="dash-app-title">Notes</div>
-                <div class="dash-app-desc">Consultez, créez et gérez vos notes personnelles.</div>
-                <div class="dash-app-link">
-                    Accéder aux notes
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                </div>
-            </a>
-
-            <a href="{% url 'task_list' %}" class="dash-app-card">
-                <div class="dash-app-header">
-                    <span class="dash-app-icon">
-                        <i class="fa-solid fa-list-check" aria-hidden="true"></i>
-                    </span>
-                </div>
-                <div class="dash-app-title">Tâches</div>
-                <div class="dash-app-desc">
-                    {{ total_tasks }} tâche(s) dont {{ tasks_urgent }} urgente(s).
-                </div>
-                <div class="dash-app-link">
-                    Accéder aux tâches
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                </div>
-            </a>
-
-            <a href="{% url 'bookmark_list' %}" class="dash-app-card">
-                <div class="dash-app-header">
-                    <span class="dash-app-icon">
-                        <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
-                    </span>
-                </div>
-                <div class="dash-app-title">Favoris</div>
-                <div class="dash-app-desc">
-                    {{ total_bookmarks }} favori(s) sauvegardé(s).
-                </div>
-                <div class="dash-app-link">
-                    Accéder aux favoris
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                </div>
-            </a>
-
-            <a href="{% url 'article_list' %}" class="dash-app-card">
-                <div class="dash-app-header">
-                    <span class="dash-app-icon">
-                        <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
-                    </span>
-                </div>
-                <div class="dash-app-title">Blog</div>
-                <div class="dash-app-desc">
-                    {{ total_articles }} article(s) dont {{ total_published }} publié(s).
-                </div>
-                <div class="dash-app-link">
-                    Gérer le blog
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                </div>
-            </a>
-
         </div>
+
     </div>
 
 </div>
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+const csrfToken = '{{ csrf_token }}';
+
+// Personnalisation des widgets
+const customizeBtn = document.getElementById('customize-btn');
+const customizePanel = document.getElementById('customize-panel');
+
+customizeBtn.addEventListener('click', function() {
+    const isVisible = customizePanel.style.display !== 'none';
+    customizePanel.style.display = isVisible ? 'none' : 'block';
+    customizeBtn.classList.toggle('is-active', !isVisible);
+});
+
+// Toggle chaque widget
+const widgetMap = {
+    'widget-today':     'section-today',
+    'widget-stats':     'section-stats',
+    'widget-tasks':     'section-tasks',
+    'widget-bookmarks': 'section-bookmarks',
+    'widget-articles':  'section-articles',
+    'widget-activity':  'section-activity',
+};
+
+function savePreferences() {
+    const prefs = {};
+    Object.keys(widgetMap).forEach(function(checkboxId) {
+        const key = checkboxId.replace('widget-', '');
+        prefs[key] = document.getElementById(checkboxId).checked;
+    });
+
+    fetch('{% url "dashboard_widgets" %}', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(prefs),
+    });
+}
+
+Object.entries(widgetMap).forEach(function([checkboxId, sectionId]) {
+    const checkbox = document.getElementById(checkboxId);
+    const section = document.getElementById(sectionId);
+
+    checkbox.addEventListener('change', function() {
+        section.style.display = this.checked ? '' : 'none';
+        savePreferences();
+    });
+});
+
+// Hauteur des barres d'activité
+document.querySelectorAll('.dash-activity-bar').forEach(function(bar) {
+    const value = parseInt(bar.dataset.value) || 0;
+    const max = {{ activite_max }};
+    const pct = max > 0 ? (value / max * 100) : 0;
+    bar.style.height = Math.max(pct, 4) + '%';
+});
+</script>
+{% endblock %}
 
 {% endblock %}

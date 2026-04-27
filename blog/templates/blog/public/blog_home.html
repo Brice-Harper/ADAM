@@ -11,9 +11,7 @@
     <div class="blog-header">
         <h1 class="blog-main-title">Blog</h1>
         {% if selected_category %}
-            <p class="blog-subtitle">
-                Catégorie : <span style="color: {{ selected_category.color }};">{{ selected_category.name }}</span>
-            </p>
+            <p class="blog-subtitle">Catégorie : <span style="color: {{ selected_category.color }};">{{ selected_category.name }}</span></p>
         {% elif selected_tag %}
             <p class="blog-subtitle">Tag : #{{ selected_tag.name }}</p>
         {% else %}
@@ -21,7 +19,7 @@
         {% endif %}
     </div>
 
-    <!-- Barre de recherche + filtres -->
+    <!-- Recherche + catégories -->
     <div class="blog-filters">
         <form method="get" class="blog-filters-form">
             <input type="text"
@@ -30,7 +28,6 @@
                    placeholder="Rechercher un article..."
                    value="{{ query }}"
                    autocomplete="off">
-
             <div class="blog-categories">
                 <a href="{% url 'blog_home' %}"
                    class="blog-category-btn {% if not category_slug %}is-active{% endif %}">
@@ -47,72 +44,110 @@
         </form>
     </div>
 
-    <!-- Liste des articles -->
     {% if articles %}
-        <div class="blog-articles-list">
-            {% for article in articles %}
-                <article class="blog-article-card">
 
-                    <!-- Image -->
-                    {% if article.get_cover_image %}
-                        <a href="{% url 'article_detail' article.slug %}" class="blog-article-image">
-                            <img src="{{ article.get_cover_image }}" alt="{{ article.title }}">
-                        </a>
+        {% with featured=articles.0 %}
+
+        <!-- Article mis en avant -->
+        <div>
+            <div class="blog-section-label">À la une</div>
+            <a href="{% url 'article_detail' featured.slug %}" class="blog-featured-card">
+
+                <!-- Image -->
+                <div class="blog-featured-img">
+                    {% if featured.get_cover_image %}
+                        <img src="{{ featured.get_cover_image }}" alt="{{ featured.title }}">
                     {% endif %}
+                    <div class="blog-featured-img-overlay"></div>
+                    {% if featured.category %}
+                        <span class="blog-featured-cat-badge" style="background: {{ featured.category.color }};">
+                            {{ featured.category.name }}
+                        </span>
+                    {% endif %}
+                </div>
 
-                    <!-- Contenu -->
-                    <div class="blog-article-body">
-                        <div class="blog-article-meta">
-                            {% if article.category %}
-                                <a href="{% url 'blog_category' article.category.slug %}"
-                                   class="blog-article-category"
-                                   style="color: {{ article.category.color }};">
-                                    {{ article.category.name }}
-                                </a>
-                                <span class="blog-meta-sep">·</span>
-                            {% endif %}
-                            <span class="blog-article-date">
-                                {{ article.published_at|date:"d/m/Y" }}
-                            </span>
+                <!-- Corps -->
+                <div class="blog-featured-body">
+                    <div>
+                        <div class="blog-featured-meta">
+                            <span>{{ featured.published_at|date:"d F Y" }}</span>
                             <span class="blog-meta-sep">·</span>
-                            <span class="blog-article-reading">
-                                <i class="fa-regular fa-clock" aria-hidden="true"></i>
-                                {{ article.reading_time }} min
-                            </span>
+                            <span>{{ featured.reading_time }} min de lecture</span>
                         </div>
-
-                        <h2 class="blog-article-title">
-                            <a href="{% url 'article_detail' article.slug %}">
-                                {{ article.title }}
-                            </a>
-                        </h2>
-
-                        {% if article.excerpt %}
-                            <p class="blog-article-excerpt">{{ article.excerpt }}</p>
-                        {% endif %}
-
-                        <div class="blog-article-footer">
-                            <div class="blog-article-tags">
-                                {% for tag in article.tags.all %}
-                                    <a href="{% url 'blog_tag' tag.slug %}" class="bookmark-tag">
-                                        #{{ tag.name }}
-                                    </a>
-                                {% endfor %}
-                            </div>
-                            <a href="{% url 'article_detail' article.slug %}" class="blog-read-more">
-                                Lire l'article
-                                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                            </a>
-                        </div>
+                        <h2 class="blog-featured-title">{{ featured.title }}</h2>
                     </div>
+                    {% if featured.excerpt %}
+                        <p class="blog-featured-excerpt">{{ featured.excerpt }}</p>
+                    {% endif %}
+                    <div class="blog-featured-footer">
+                        <div class="blog-featured-author">
+                            <div class="blog-author-dot">
+                                {{ featured.author.first_name|first|default:featured.author.username|first|upper }}
+                            </div>
+                            <span>{{ featured.author.get_full_name|default:featured.author.username }}</span>
+                        </div>
+                        <span class="blog-featured-cta">
+                            Lire l'article
+                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                </div>
 
-                </article>
-            {% endfor %}
+            </a>
         </div>
+
+        <!-- Grille des autres articles -->
+        {% if articles|length > 1 %}
+            <div>
+                <div class="blog-section-label">Derniers articles</div>
+                <div class="blog-grid">
+                    {% for article in articles %}
+                        {% if not forloop.first %}
+                            <a href="{% url 'article_detail' article.slug %}" class="blog-grid-card">
+
+                                <!-- Image -->
+                                <div class="blog-grid-img">
+                                    {% if article.get_cover_image %}
+                                        <img src="{{ article.get_cover_image }}" alt="{{ article.title }}">
+                                    {% else %}
+                                        <div class="blog-grid-img-placeholder">
+                                            <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Corps -->
+                                <div class="blog-grid-body">
+                                    {% if article.category %}
+                                        <span class="blog-grid-cat" style="color: {{ article.category.color }};">
+                                            {{ article.category.name }}
+                                        </span>
+                                    {% endif %}
+                                    <h3 class="blog-grid-title">{{ article.title }}</h3>
+                                    {% if article.excerpt %}
+                                        <p class="blog-grid-excerpt">{{ article.excerpt|truncatewords:15 }}</p>
+                                    {% endif %}
+                                    <div class="blog-grid-footer">
+                                        <span class="blog-grid-date">{{ article.published_at|date:"d/m/Y" }}</span>
+                                        <span class="blog-grid-time">
+                                            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                                            {{ article.reading_time }} min
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% endwith %}
 
         <!-- Pagination -->
         {% if articles.has_other_pages %}
-            <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
+            <nav class="pagination is-centered mt-3" role="navigation" aria-label="pagination">
                 {% if articles.has_previous %}
                     <a class="pagination-previous" href="?page={{ articles.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}">
                         Page précédente

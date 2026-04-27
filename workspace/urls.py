@@ -7,6 +7,7 @@ from .views import (
     note_update,
     note_delete,
     log_list,
+    dashboard_widgets,
 )
 
 
@@ -18,4 +19,5 @@ urlpatterns = [
     path("notes/<int:note_id>/update/", note_update, name="note_update"),
     path("notes/<int:note_id>/delete/", note_delete, name="note_delete"),
     path("logs/", log_list, name="log_list"),
+    path("dashboard/widgets/", dashboard_widgets, name="dashboard_widgets"),
 ]
